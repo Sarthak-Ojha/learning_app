@@ -12,14 +12,18 @@ class SubjectLessonsScreen extends StatefulWidget {
 }
 
 class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
-  String _selectedCategory = 'Learning';
+  String? _selectedCategory;
   
-  final List<Map<String, dynamic>> _categories = [
-    {'id': 'Learning', 'name': 'Learn', 'icon': Icons.menu_book_rounded},
-    {'id': 'Fill-in-the-Blanks', 'name': 'Fill Blanks', 'icon': Icons.edit_note_rounded},
-    {'id': 'True-False', 'name': 'True/False', 'icon': Icons.checklist_rtl_rounded},
-    {'id': 'Counting', 'name': 'Counting', 'icon': Icons.exposure_rounded},
-  ];
+  IconData _getCategoryIcon(String categoryId) {
+    switch (categoryId) {
+      case 'Learning': return Icons.menu_book_rounded;
+      case 'Fill-in-the-Blanks': return Icons.edit_note_rounded;
+      case 'True-False': return Icons.checklist_rtl_rounded;
+      case 'Counting': return Icons.exposure_rounded;
+      case 'Matching': return Icons.compare_arrows_rounded;
+      default: return Icons.school_rounded;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +33,17 @@ class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
     final classLevel = args['classLevel'] as int;
 
     final allLessons = MultiSubjectService.getLessonsForClass(classLevel, subject);
+    
+    // Get unique categories present in these lessons
+    final categories = allLessons.map((l) => l.category).toSet().toList();
+    
     final lessons = allLessons.where((l) => l.category == _selectedCategory).toList();
 
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
-          title,
+          _selectedCategory == null ? title : '$_selectedCategory',
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -45,8 +53,20 @@ class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            _selectedCategory == null ? Icons.arrow_back_ios_new : Icons.close, 
+            color: Colors.white, 
+            size: 20
+          ),
+          onPressed: () {
+            if (_selectedCategory == null) {
+              Navigator.pop(context);
+            } else {
+              setState(() {
+                _selectedCategory = null;
+              });
+            }
+          },
         ),
       ),
       body: Container(
@@ -64,79 +84,92 @@ class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
           bottom: false,
           child: Column(
             children: [
-              // Category Selector
-              Container(
-                height: 60,
-                margin: const EdgeInsets.symmetric(vertical: 16),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: _categories.length,
-                  itemBuilder: (context, index) {
-                    final cat = _categories[index];
-                    final isSelected = _selectedCategory == cat['id'];
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedCategory = cat['id'];
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        margin: const EdgeInsets.only(right: 12),
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        decoration: BoxDecoration(
-                          color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(30),
-                          boxShadow: isSelected ? [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            )
-                          ] : [],
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              cat['icon'],
-                              size: 20,
-                              color: isSelected ? const Color(0xFF1976D2) : Colors.white,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              cat['name'],
-                              style: TextStyle(
-                                color: isSelected ? const Color(0xFF1976D2) : Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+              if (_selectedCategory == null) ...[
+                // Stage 1: BIG Category Grid
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                    child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                        childAspectRatio: 0.9, // Make them tall/square
                       ),
-                    );
-                  },
-                ),
-              ),
-              
-              // Path UI
-              Expanded(
-                child: lessons.isEmpty 
-                  ? Center(
-                      child: Text(
-                        "No lessons in '$_selectedCategory' yet!",
-                        style: const TextStyle(color: Colors.white70, fontSize: 16),
-                      ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.only(top: 24, bottom: 64),
-                      itemCount: lessons.length,
+                      itemCount: categories.length,
                       itemBuilder: (context, index) {
-                        final lesson = lessons[index];
-                        return _buildPathNode(context, lesson, index);
+                        final catId = categories[index];
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _selectedCategory = catId;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.15),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
+                                )
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF1976D2).withValues(alpha: 0.1),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    _getCategoryIcon(catId),
+                                    size: 48,
+                                    color: const Color(0xFF1976D2),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  catId.replaceAll('-', ' '),
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Color(0xFF1976D2),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       },
                     ),
-              ),
+                  ),
+                ),
+              ] else ...[
+                // Stage 2: Level Path UI
+                Expanded(
+                  child: lessons.isEmpty 
+                    ? Center(
+                        child: Text(
+                          "No activities in '$_selectedCategory' yet!",
+                          style: const TextStyle(color: Colors.white70, fontSize: 16),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.only(top: 24, bottom: 64),
+                        itemCount: lessons.length,
+                        itemBuilder: (context, index) {
+                          final lesson = lessons[index];
+                          return _buildPathNode(context, lesson, index);
+                        },
+                      ),
+                ),
+              ],
             ],
           ),
         ),

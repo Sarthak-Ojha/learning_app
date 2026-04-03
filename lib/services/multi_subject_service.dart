@@ -451,29 +451,28 @@ class MultiSubjectService {
           ),
           Lesson(
             id: 'nepali_1_match_1',
-            title: 'Word Meanings',
-            description: 'Match Nepali words with meanings',
+            title: 'Action Matching',
+            description: 'Match actions to Nepali words',
             subject: Subject.Nepali,
             classLevel: 1,
             level: 1,
-            category: 'Fill-in-the-Blanks', // We group it under Fill-in-blanks or Create a Matching category
+            category: 'Matching',
             content: [
-              LessonContent(type: 'text', data: {'content': 'Match the English words to Nepali words.'}, order: 1),
+              LessonContent(type: 'text', data: {'content': 'Can you match the action to its Nepali name?'}, order: 1),
             ],
-            xpReward: 70,
+            xpReward: 75,
             quiz: Quiz(
               questions: [
                 Question(
                   id: 'q_nep_match_1',
                   type: 'translation_match',
-                  question: 'Match these actions!',
+                  question: 'Match the Actions!',
                   answerPairs: {
                     'Eat': 'खाने',
-                    'Go': 'जाने',
+                    'Sleep': 'सुत्ने',
                     'Sit': 'बस्ने',
-                    'Run': 'दौडने',
+                    'Walk': 'हिड्ने',
                   },
-                  explanation: 'Excellent word matching!',
                 ),
               ]
             )
