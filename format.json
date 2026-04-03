@@ -1,0 +1,62 @@
+﻿Analyzing learning_app...                                       
+
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:54:44 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:104:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:133:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:225:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:321:35 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\leaderboard_screen.dart:129:26 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\leaderboard_screen.dart:240:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\leaderboard_screen.dart:253:32 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\leaderboard_screen_simple.dart:97:26 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\leaderboard_screen_simple.dart:192:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\leaderboard_screen_simple.dart:205:32 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen.dart:83:47 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\screens\login_screen.dart:305:48 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen.dart:337:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_animated.dart:93:51 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_animated.dart:182:51 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\screens\login_screen_animated.dart:327:52 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_animated.dart:361:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_animated.dart:387:30 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_broken.dart:48:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_broken.dart:138:51 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\screens\login_screen_broken.dart:277:52 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_broken.dart:311:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_broken.dart:336:30 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_fixed.dart:83:47 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\screens\login_screen_fixed.dart:305:48 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_fixed.dart:337:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_simple.dart:36:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_simple.dart:76:41 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps - lib\screens\login_screen_simple.dart:117:48 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen_simple.dart:151:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\quiz_screen.dart:100:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\quiz_screen.dart:219:60 - deprecated_member_use
+   info - Unnecessary braces in a string interpolation - lib\screens\subject_dashboard_screen.dart:19:22 - unnecessary_brace_in_string_interps
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\subject_dashboard_screen.dart:55:49 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\subject_dashboard_screen.dart:175:35 - deprecated_member_use
+warning - This default clause is covered by the previous cases - lib\screens\subject_lessons_screen.dart:117:7 - unreachable_switch_default
+warning - This default clause is covered by the previous cases - lib\screens\subject_lessons_screen.dart:132:7 - unreachable_switch_default
+  error - The named parameter 'level' is required, but there's no corresponding argument - lib\services\lesson_service.dart:6:7 - missing_required_argument
+  error - The argument type 'String' can't be assigned to the parameter type 'Subject'.  - lib\services\lesson_service.dart:10:18 - argument_type_not_assignable
+  error - The named parameter 'level' is required, but there's no corresponding argument - lib\services\lesson_service.dart:71:7 - missing_required_argument
+  error - The argument type 'String' can't be assigned to the parameter type 'Subject'.  - lib\services\lesson_service.dart:75:18 - argument_type_not_assignable
+  error - The named parameter 'level' is required, but there's no corresponding argument - lib\services\lesson_service.dart:118:7 - missing_required_argument
+  error - The argument type 'String' can't be assigned to the parameter type 'Subject'.  - lib\services\lesson_service.dart:122:18 - argument_type_not_assignable
+warning - Unused import: 'package:flutter/material.dart' - lib\services\multi_subject_service.dart:1:8 - unused_import
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<Lesson>', is a potentially non-nullable type - lib\services\multi_subject_service.dart:20:23 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<Lesson>', is a potentially non-nullable type - lib\services\multi_subject_service.dart:148:23 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<Lesson>', is a potentially non-nullable type - lib\services\multi_subject_service.dart:249:23 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<Lesson>', is a potentially non-nullable type - lib\services\multi_subject_service.dart:350:23 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<GrammarExercise>', is a potentially non-nullable type - lib\services\multi_subject_service.dart:472:32 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<GrammarExercise>', is a potentially non-nullable type - lib\services\multi_subject_service.dart:522:32 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<ColorGame>', is a potentially non-nullable type - lib\services\multi_subject_service.dart:561:26 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<Lesson>', is a potentially non-nullable type - lib\services\multi_subject_service_simple.dart:19:23 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<Lesson>', is a potentially non-nullable type - lib\services\multi_subject_service_simple.dart:151:23 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<Lesson>', is a potentially non-nullable type - lib\services\multi_subject_service_simple.dart:252:23 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<Lesson>', is a potentially non-nullable type - lib\services\multi_subject_service_simple.dart:353:23 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<GrammarExercise>', is a potentially non-nullable type - lib\services\multi_subject_service_simple.dart:476:32 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<GrammarExercise>', is a potentially non-nullable type - lib\services\multi_subject_service_simple.dart:527:32 - body_might_complete_normally
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'List<ColorGame>', is a potentially non-nullable type - lib\services\multi_subject_service_simple.dart:566:26 - body_might_complete_normally
+
