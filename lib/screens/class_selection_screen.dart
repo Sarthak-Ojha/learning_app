@@ -69,7 +69,7 @@ class ClassSelectionScreen extends StatelessWidget {
                       mainAxisSpacing: 16,
                       childAspectRatio: 1.1,
                     ),
-                    itemCount: 10,
+                    itemCount: 5,
                     itemBuilder: (context, index) {
                       return _buildClassCard(context, index + 1, name, age);
                     },

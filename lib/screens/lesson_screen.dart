@@ -296,15 +296,19 @@ class _LessonScreenState extends State<LessonScreen> {
     final userProvider = Provider.of<UserProviderSimple>(context, listen: false);
     final xpEarned = widget.lesson.xpReward;
 
-    userProvider.addXP(xpEarned);
-    userProvider.completeLesson(widget.lesson.id);
+    userProvider.completeLesson(widget.lesson.id, widget.lesson.xpReward);
 
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Lesson Completed!', textAlign: TextAlign.center),
+        title: Text(
+          widget.lesson.subject == Subject.Nepali
+              ? 'पाठ पूरा भयो!'
+              : 'Lesson Completed!',
+          textAlign: TextAlign.center,
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

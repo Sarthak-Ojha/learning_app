@@ -22,7 +22,37 @@ class FirebaseService {
           .orderBy('xp', descending: true)
           .limit(10)
           .get();
-      return snapshot.docs.map((doc) => doc.data()).toList();
+      
+      List<Map<String, dynamic>> players = 
+          snapshot.docs.map((doc) => doc.data()).toList();
+
+      // If we have very few real players, add high-quality "Smart Dummies"
+      // to make the leaderboard look active and competitive.
+      if (players.length < 10) {
+        final List<String> dummyNames = [
+          'Aayush Sharma', 'Smriti Rai', 'Rohan Gurung', 'Prakriti Thapa',
+          'Siddharth Jha', 'Nisha Tamang', 'Bikram Shah', 'Anjali Pandey', 
+          'Sunil Magar', 'Kripa Shrestha'
+        ];
+        
+        // Base XP on real player's top XP if exists, otherwise use class-specific defaults
+        int topXp = players.isNotEmpty ? players.first['xp'] : (classLevel * 200 + 500);
+        
+        for (int i = 0; i < (10 - players.length); i++) {
+          final dummyXp = topXp - (i + 1) * 75;
+          players.add({
+            'name': dummyNames[i % dummyNames.length],
+            'xp': dummyXp < 0 ? 10 : dummyXp,
+            'level': (dummyXp / 150).floor().clamp(1, 10),
+            'classLevel': classLevel,
+            'isDummy': true,
+          });
+        }
+      }
+
+      // Re-sort because we added dummies
+      players.sort((a, b) => (b['xp'] as int).compareTo(a['xp'] as int));
+      return players;
     } catch (e) {
       debugPrint("Error fetching leaderboard: $e");
       return [];

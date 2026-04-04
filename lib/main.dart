@@ -35,39 +35,51 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => UserProviderSimple(),
-      child: MaterialApp(
-        title: 'GyanYatra',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFFFFD700), // Sunny Yellow
-            brightness: Brightness.light,
-          ),
-          useMaterial3: true,
-          fontFamily: 'Roboto',
-        ),
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const SplashScreen(),
-          '/auth': (context) => const AuthScreen(),
-          '/profile': (context) => const ChildProfileScreen(),
-          '/class_selection': (context) => const ClassSelectionScreen(),
-          '/home': (context) => const SubjectDashboardScreen(),
-          '/subject_lessons': (context) => const SubjectLessonsScreen(),
-          '/lesson': (context) {
-            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-            final lesson = args['lesson'] as Lesson;
-            return LessonScreen(lesson: lesson);
-          },
-          '/quiz': (context) {
-            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-            final lesson = args['lesson'] as Lesson;
-            return QuizScreen(lesson: lesson);
-          },
-          '/leaderboard': (context) => const LeaderboardScreenSimple(),
-          '/premium_upgrade': (context) => const PremiumUpgradeScreen(),
+      create: (context) {
+        final provider = UserProviderSimple();
+        provider.checkCurrentUser();
+        return provider;
+      },
+      child: Consumer<UserProviderSimple>(
+        builder: (context, userProvider, _) {
+          return MaterialApp(
+            title: 'GyanYatra',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color(0xFF1976D2),
+                brightness: Brightness.light,
+              ),
+              useMaterial3: true,
+              fontFamily: 'Roboto',
+            ),
+            // Automatically show dashboard if authenticated, else show Splash/Auth
+            home: userProvider.isAuthenticated
+                ? const SubjectDashboardScreen()
+                : const SplashScreen(),
+            routes: {
+              '/auth': (context) => const AuthScreen(),
+              '/profile': (context) => const ChildProfileScreen(),
+              '/class_selection': (context) => const ClassSelectionScreen(),
+              '/home': (context) => const SubjectDashboardScreen(),
+              '/subject_lessons': (context) => const SubjectLessonsScreen(),
+              '/lesson': (context) {
+                final args = ModalRoute.of(context)!.settings.arguments
+                    as Map<String, dynamic>;
+                final lesson = args['lesson'] as Lesson;
+                return LessonScreen(lesson: lesson);
+              },
+              '/quiz': (context) {
+                final args = ModalRoute.of(context)!.settings.arguments
+                    as Map<String, dynamic>;
+                final lesson = args['lesson'] as Lesson;
+                return QuizScreen(lesson: lesson);
+              },
+              '/leaderboard': (context) => const LeaderboardScreenSimple(),
+              '/premium_upgrade': (context) => const PremiumUpgradeScreen(),
+            },
+            debugShowCheckedModeBanner: false,
+          );
         },
-        debugShowCheckedModeBanner: false,
       ),
     );
   }

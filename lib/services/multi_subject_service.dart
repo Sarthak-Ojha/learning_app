@@ -6,18 +6,26 @@ class MultiSubjectService {
     List<Lesson> rawLessons;
     switch (subject) {
       case Subject.Math:
-        rawLessons = _getMathLessons(classLevel); break;
+        rawLessons = _getMathLessons(classLevel);
+        break;
       case Subject.English:
-        rawLessons = _getEnglishLessons(classLevel); break;
+        rawLessons = _getEnglishLessons(classLevel);
+        break;
       case Subject.Nepali:
-        rawLessons = _getNepaliLessons(classLevel); break;
+        rawLessons = _getNepaliLessons(classLevel);
+        break;
       case Subject.GK:
-        rawLessons = _getGKLessons(classLevel); break;
+        rawLessons = _getGKLessons(classLevel);
+        break;
     }
     return _enforceThreeLevels(rawLessons, classLevel, subject);
   }
 
-  static List<Lesson> _enforceThreeLevels(List<Lesson> lessons, int classLevel, Subject subject) {
+  static List<Lesson> _enforceThreeLevels(
+    List<Lesson> lessons,
+    int classLevel,
+    Subject subject,
+  ) {
     List<Lesson> result = [];
     Map<String, List<Lesson>> byCategory = {};
 
@@ -40,7 +48,8 @@ class MultiSubjectService {
         String stepType = isLearnNode ? 'Learn' : 'Play';
         bool isLocked = i > 1;
 
-        String generatedId = '${subject.name.toLowerCase()}_${classLevel}_${category.toLowerCase().replaceAll(' ', '_')}_$i';
+        String generatedId =
+            '${subject.name.toLowerCase()}_${classLevel}_${category.toLowerCase().replaceAll(' ', '_')}_$i';
 
         Lesson node;
 
@@ -77,20 +86,32 @@ class MultiSubjectService {
             category: category,
             content: baseLesson != null
                 ? baseLesson.content
-                : [LessonContent(type: 'text', content: 'Keep exploring $category!')],
+                : [
+                    LessonContent(
+                      type: 'text',
+                      content: 'Keep exploring $category!',
+                    ),
+                  ],
             prerequisites: previousNodeId != null ? [previousNodeId] : [],
             isLocked: isLocked,
             xpReward: 50 * i,
             quiz: !isLearnNode
-                ? Quiz(questions: [
-                    Question(
-                      id: 'q_$generatedId',
-                      type: 'multiple_choice',
-                      question: 'What did you learn in $category?',
-                      options: ['A lot!', 'Something', 'Not much', 'Everything'],
-                      correctAnswer: 'A lot!',
-                    )
-                  ])
+                ? Quiz(
+                    questions: [
+                      Question(
+                        id: 'q_$generatedId',
+                        type: 'multiple_choice',
+                        question: 'What did you learn in $category?',
+                        options: [
+                          'A lot!',
+                          'Something',
+                          'Not much',
+                          'Everything',
+                        ],
+                        correctAnswer: 'A lot!',
+                      ),
+                    ],
+                  )
                 : null,
           );
         }
@@ -105,7 +126,7 @@ class MultiSubjectService {
   // Math Lessons by Class
   static List<Lesson> _getMathLessons(int classLevel) {
     List<Lesson> lessons = [];
-    
+
     if (classLevel == 1) {
       // Class 1 Numbers Path
       lessons.addAll([
@@ -118,10 +139,29 @@ class MultiSubjectService {
           level: 1,
           category: 'Numbers',
           content: [
-            LessonContent(type: 'text', content: '🔢 Let\'s learn numbers from 1 to 10!', order: 1),
-            LessonContent(type: 'text', content: '1 = One (एक)\n2 = Two (दुई)\n3 = Three (तीन)\n4 = Four (चार)\n5 = Five (पाँच)', order: 2),
-            LessonContent(type: 'text', content: '6 = Six (छ)\n7 = Seven (सात)\n8 = Eight (आठ)\n9 = Nine (नौ)\n10 = Ten (दश)', order: 3),
-            LessonContent(type: 'text', content: '💡 Tip: Use your fingers to count!\n\nHold up 3 fingers → that is 3.\nHold up 7 fingers → that is 7.', order: 4),
+            LessonContent(
+              type: 'text',
+              content: '🔢 Let\'s learn numbers from 1 to 10!',
+              order: 1,
+            ),
+            LessonContent(
+              type: 'text',
+              content:
+                  '1 = One (एक)\n2 = Two (दुई)\n3 = Three (तीन)\n4 = Four (चार)\n5 = Five (पाँच)',
+              order: 2,
+            ),
+            LessonContent(
+              type: 'text',
+              content:
+                  '6 = Six (छ)\n7 = Seven (सात)\n8 = Eight (आठ)\n9 = Nine (नौ)\n10 = Ten (दश)',
+              order: 3,
+            ),
+            LessonContent(
+              type: 'text',
+              content:
+                  '💡 Tip: Use your fingers to count!\n\nHold up 3 fingers → that is 3.\nHold up 7 fingers → that is 7.',
+              order: 4,
+            ),
           ],
           xpReward: 50,
           quiz: Quiz(
@@ -140,7 +180,8 @@ class MultiSubjectService {
                 question: 'Count the stars: ★ ★ ★',
                 options: ['2', '3', '4', '5'],
                 correctAnswer: '3',
-                explanation: 'Count them one by one: 1, 2, 3. There are 3 stars!',
+                explanation:
+                    'Count them one by one: 1, 2, 3. There are 3 stars!',
               ),
               Question(
                 id: 'q_math_1_num_3',
@@ -158,7 +199,7 @@ class MultiSubjectService {
                 correctAnswer: '5',
                 explanation: 'One hand has 5 fingers!',
               ),
-            ]
+            ],
           ),
         ),
       ]);
@@ -174,10 +215,29 @@ class MultiSubjectService {
           level: 1,
           category: 'Addition',
           content: [
-            LessonContent(type: 'text', content: '➕ Addition means joining things together to find the total!', order: 1),
-            LessonContent(type: 'text', content: 'Example:\n🍎 + 🍎 = 2 apples\n\n1 + 1 = 2', order: 2),
-            LessonContent(type: 'text', content: 'We use the "+" sign to add.\nWe use the "=" sign for the answer.\n\nExample: 2 + 3 = 5', order: 3),
-            LessonContent(type: 'text', content: '📝 Practice:\n1 + 1 = 2\n2 + 1 = 3\n3 + 2 = 5\n4 + 1 = 5', order: 4),
+            LessonContent(
+              type: 'text',
+              content:
+                  '➕ Addition means joining things together to find the total!',
+              order: 1,
+            ),
+            LessonContent(
+              type: 'text',
+              content: 'Example:\n🍎 + 🍎 = 2 apples\n\n1 + 1 = 2',
+              order: 2,
+            ),
+            LessonContent(
+              type: 'text',
+              content:
+                  'We use the "+" sign to add.\nWe use the "=" sign for the answer.\n\nExample: 2 + 3 = 5',
+              order: 3,
+            ),
+            LessonContent(
+              type: 'text',
+              content:
+                  '📝 Practice:\n1 + 1 = 2\n2 + 1 = 3\n3 + 2 = 5\n4 + 1 = 5',
+              order: 4,
+            ),
           ],
           xpReward: 60,
           quiz: Quiz(
@@ -196,7 +256,8 @@ class MultiSubjectService {
                 question: '2 + 2 = ?',
                 options: ['3', '4', '5', '6'],
                 correctAnswer: '4',
-                explanation: '2 + 2 = 4. Hold 2 fingers, then 2 more = 4 fingers!',
+                explanation:
+                    '2 + 2 = 4. Hold 2 fingers, then 2 more = 4 fingers!',
               ),
               Question(
                 id: 'q_math_1_add_3',
@@ -206,7 +267,7 @@ class MultiSubjectService {
                 correctAnswer: '4',
                 explanation: '3 + 1 = 4.',
               ),
-            ]
+            ],
           ),
         ),
       ]);
@@ -214,115 +275,319 @@ class MultiSubjectService {
       lessons.addAll([
         Lesson(
           id: 'math_2_placevalue_1',
-          title: 'Place Value: Tens and Ones',
-          description: 'Learn about Tens and Ones',
+          title: 'Tens and Ones',
+          description: 'Learn about place value, then complete the task to earn XP!',
           subject: Subject.Math,
           classLevel: 2,
           level: 1,
           category: 'Numbers',
           content: [
-            LessonContent(type: 'text', content: 'Every number is made of Tens and Ones.', order: 1),
-            LessonContent(type: 'text', content: 'Example: The number 15\n→ 1 Ten and 5 Ones', order: 2),
-            LessonContent(type: 'text', content: 'Example: The number 24\n→ 2 Tens and 4 Ones', order: 3),
-            LessonContent(type: 'text', content: 'Think of Tens as a bundle of 10 sticks!', order: 4),
+            LessonContent(type: 'text', content: '🔢 Every number is made of Tens and Ones!', order: 1),
+            LessonContent(type: 'text', content: 'Example: 24 = 2 Tens (20) + 4 Ones (4)', order: 2),
+            LessonContent(type: 'text', content: 'Example: 37 = 3 Tens (30) + 7 Ones (7)', order: 3),
+            LessonContent(type: 'text', content: '💡 Think of Tens as a bundle of 10 sticks tied together!', order: 4),
           ],
-          xpReward: 40,
-        ),
-        Lesson(
-          id: 'math_2_placevalue_2',
-          title: 'Place Value Quiz',
-          description: 'Test your place value skills',
-          subject: Subject.Math,
-          classLevel: 2,
-          level: 2,
-          category: 'Numbers',
-          content: [LessonContent(type: 'text', content: 'How many Tens and Ones?', order: 1)],
           xpReward: 60,
           quiz: Quiz(
             questions: [
               Question(
                 id: 'q_math_2_pv_1',
                 type: 'multiple_choice',
-                question: 'In the number 24, how many Tens are there?',
-                options: ['2', '4', '20', '6'],
-                correctAnswer: '2',
-                explanation: '24 = 2 Tens + 4 Ones.',
+                question: 'In 37, how many Tens are there?',
+                options: ['3', '7', '30', '1'],
+                correctAnswer: '3',
+                explanation: '37 = 3 Tens and 7 Ones.',
               ),
               Question(
                 id: 'q_math_2_pv_2',
                 type: 'multiple_choice',
-                question: 'In the number 37, how many Ones are there?',
-                options: ['3', '7', '37', '10'],
-                correctAnswer: '7',
-                explanation: '37 = 3 Tens + 7 Ones.',
+                question: 'In 45, how many Ones are there?',
+                options: ['4', '5', '40', '9'],
+                correctAnswer: '5',
+                explanation: '45 = 4 Tens + 5 Ones.',
               ),
-            ]
-          )
+              Question(
+                id: 'q_math_2_pv_3',
+                type: 'fill_blank',
+                question: '52 = ___ Tens + 2 Ones',
+                options: ['3', '5', '2', '52'],
+                correctAnswer: '5',
+                explanation: '52 = 5 Tens + 2 Ones.',
+              ),
+            ],
+          ),
         ),
         Lesson(
           id: 'math_2_addition_1',
           title: 'Two-Digit Addition',
-          description: 'Adding numbers up to 99',
+          description: 'Add bigger numbers, then complete the task to earn XP!',
           subject: Subject.Math,
           classLevel: 2,
           level: 1,
           category: 'Addition',
           content: [
-            LessonContent(type: 'text', content: 'Now we add bigger numbers!', order: 1),
-            LessonContent(type: 'text', content: 'Add the Ones first, then the Tens.\n\nExample: 12 + 21\nOnes: 2 + 1 = 3\nTens: 1 + 2 = 3\nAnswer: 33', order: 2),
-            LessonContent(type: 'text', content: 'Practice: 14 + 25 = 39', order: 3),
+            LessonContent(type: 'text', content: '➕ Now we add bigger numbers!', order: 1),
+            LessonContent(type: 'text', content: 'Add the Ones first, then the Tens.\n\nExample: 13 + 24\nOnes: 3 + 4 = 7\nTens: 1 + 2 = 3\nAnswer: 37 ✅', order: 2),
+            LessonContent(type: 'text', content: '📝 Try: 21 + 15 = ?\nOnes: 1+5=6, Tens: 2+1=3 → Answer: 36', order: 3),
           ],
-          xpReward: 50,
+          xpReward: 60,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_math_2_add_1',
+                type: 'fill_blank',
+                question: '13 + 24 = ___',
+                options: ['36', '37', '38', '27'],
+                correctAnswer: '37',
+                explanation: 'Ones: 3+4=7, Tens: 1+2=3 → 37!',
+              ),
+              Question(
+                id: 'q_math_2_add_2',
+                type: 'multiple_choice',
+                question: '21 + 15 = ?',
+                options: ['35', '36', '26', '46'],
+                correctAnswer: '36',
+                explanation: 'Ones: 1+5=6, Tens: 2+1=3 → 36!',
+              ),
+            ],
+          ),
+        ),
+      ]);
+    } else if (classLevel == 3) {
+      lessons.addAll([
+        Lesson(
+          id: 'math_3_mult_1',
+          title: 'Multiplication Basics',
+          description: 'Learn multiplication, then complete the task to earn XP!',
+          subject: Subject.Math,
+          classLevel: 3,
+          level: 1,
+          category: 'Multiplication',
+          content: [
+            LessonContent(type: 'text', content: '✖️ Multiplication is fast repeated addition!', order: 1),
+            LessonContent(type: 'text', content: '2 × 3 means: add 2 three times\n2 + 2 + 2 = 6\nSo 2 × 3 = 6!', order: 2),
+            LessonContent(type: 'text', content: '5 × 4 means: add 5 four times\n5+5+5+5 = 20\nSo 5 × 4 = 20!', order: 3),
+            LessonContent(type: 'text', content: '💡 Times Tables:\n2×1=2, 2×2=4, 2×3=6, 2×4=8, 2×5=10', order: 4),
+          ],
+          xpReward: 70,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_math_3_mult_1',
+                type: 'multiple_choice',
+                question: 'What is 3 × 3?',
+                options: ['6', '9', '12', '3'],
+                correctAnswer: '9',
+                explanation: '3 + 3 + 3 = 9.',
+              ),
+              Question(
+                id: 'q_math_3_mult_2',
+                type: 'multiple_choice',
+                question: 'What is 5 × 2?',
+                options: ['7', '8', '10', '52'],
+                correctAnswer: '10',
+                explanation: '5 + 5 = 10.',
+              ),
+              Question(
+                id: 'q_math_3_mult_3',
+                type: 'fill_blank',
+                question: '4 × 3 = ___',
+                options: ['9', '12', '7', '43'],
+                correctAnswer: '12',
+                explanation: '4+4+4 = 12.',
+              ),
+            ],
+          ),
+        ),
+        Lesson(
+          id: 'math_3_division_1',
+          title: 'Intro to Division',
+          description: 'Learn to share equally, then complete the task to earn XP!',
+          subject: Subject.Math,
+          classLevel: 3,
+          level: 1,
+          category: 'Division',
+          content: [
+            LessonContent(type: 'text', content: '➗ Division means splitting into equal groups!', order: 1),
+            LessonContent(type: 'text', content: '6 ÷ 2 = 3\nShare 6 apples between 2 people → 3 each!', order: 2),
+            LessonContent(type: 'text', content: '10 ÷ 5 = 2\nShare 10 sweets between 5 kids → 2 each!', order: 3),
+          ],
+          xpReward: 70,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_math_3_div_1',
+                type: 'multiple_choice',
+                question: '8 ÷ 2 = ?',
+                options: ['2', '4', '6', '3'],
+                correctAnswer: '4',
+                explanation: '8 shared equally between 2 = 4 each.',
+              ),
+              Question(
+                id: 'q_math_3_div_2',
+                type: 'fill_blank',
+                question: '9 ÷ 3 = ___',
+                options: ['2', '3', '4', '6'],
+                correctAnswer: '3',
+                explanation: '9 ÷ 3 = 3.',
+              ),
+            ],
+          ),
+        ),
+      ]);
+    } else if (classLevel == 4) {
+      lessons.addAll([
+        Lesson(
+          id: 'math_4_carry_1',
+          title: 'Addition with Carrying',
+          description: 'Add big numbers using carrying, then complete the task!',
+          subject: Subject.Math,
+          classLevel: 4,
+          level: 1,
+          category: 'Addition',
+          content: [
+            LessonContent(type: 'text', content: '➕ When a column adds up to 10 or more, we "carry" to the next column!', order: 1),
+            LessonContent(type: 'text', content: 'Example: 18 + 5\n  Step 1: 8 + 5 = 13\n  Write 3, carry the 1\n  Step 2: 1 + 1(carried) = 2\n  Answer: 23 ✅', order: 2),
+            LessonContent(type: 'text', content: 'Example: 47 + 36\n  Ones: 7+6=13 → write 3, carry 1\n  Tens: 4+3+1=8\n  Answer: 83 ✅', order: 3),
+          ],
+          xpReward: 80,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_math_4_add_1',
+                type: 'multiple_choice',
+                question: 'What is 18 + 5?',
+                options: ['22', '23', '24', '13'],
+                correctAnswer: '23',
+                explanation: '8+5=13: write 3, carry 1. 1+1=2. Answer: 23.',
+              ),
+              Question(
+                id: 'q_math_4_add_2',
+                type: 'fill_blank',
+                question: '47 + 36 = ___',
+                options: ['82', '83', '84', '73'],
+                correctAnswer: '83',
+                explanation: '7+6=13 (carry 1), 4+3+1=8. Answer: 83.',
+              ),
+            ],
+          ),
+        ),
+        Lesson(
+          id: 'math_4_mult_1',
+          title: 'Multiplication Tables (6-10)',
+          description: 'Master higher times tables, then complete the task!',
+          subject: Subject.Math,
+          classLevel: 4,
+          level: 1,
+          category: 'Multiplication',
+          content: [
+            LessonContent(type: 'text', content: '✖️ You know 2-5 tables. Now let\'s go further!', order: 1),
+            LessonContent(type: 'text', content: '6 × table:\n6×1=6, 6×2=12, 6×3=18,\n6×4=24, 6×5=30', order: 2),
+            LessonContent(type: 'text', content: '7 × table:\n7×1=7, 7×2=14, 7×3=21,\n7×4=28, 7×5=35', order: 3),
+          ],
+          xpReward: 80,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_math_4_mul_1',
+                type: 'multiple_choice',
+                question: 'What is 6 × 4?',
+                options: ['20', '22', '24', '26'],
+                correctAnswer: '24',
+                explanation: '6 × 4 = 24.',
+              ),
+              Question(
+                id: 'q_math_4_mul_2',
+                type: 'multiple_choice',
+                question: 'What is 7 × 3?',
+                options: ['18', '21', '24', '28'],
+                correctAnswer: '21',
+                explanation: '7 × 3 = 21.',
+              ),
+            ],
+          ),
         ),
       ]);
     } else if (classLevel == 5) {
       lessons.addAll([
         Lesson(
           id: 'math_5_fractions_1',
-          title: 'Introduction to Fractions',
-          description: 'Learn about numerator and denominator',
+          title: 'Understanding Fractions',
+          description: 'Learn fractions, then complete the task to earn XP!',
           subject: Subject.Math,
           classLevel: 5,
           level: 1,
           category: 'Fractions',
           content: [
-            LessonContent(type: 'text', content: 'A fraction shows a part of a whole.', order: 1),
-            LessonContent(type: 'text', content: 'A fraction looks like this: 1/2\n\nNumerator (top) = parts we have\nDenominator (bottom) = total parts', order: 2),
-            LessonContent(type: 'text', content: 'Example: A pizza cut into 4 slices.\nIf you eat 1 slice, you ate 1/4 of the pizza.', order: 3),
-            LessonContent(type: 'text', content: 'Common fractions:\n1/2 = Half\n1/4 = Quarter\n3/4 = Three quarters', order: 4),
+            LessonContent(type: 'text', content: '🍕 A fraction shows a PART of a whole!', order: 1),
+            LessonContent(type: 'text', content: 'The TOP number = Numerator (parts we have)\nThe BOTTOM number = Denominator (total parts)\n\nExample: 3/4 → we have 3 out of 4 parts', order: 2),
+            LessonContent(type: 'text', content: 'Common fractions:\n1/2 = Half (pizza cut in 2, take 1)\n1/4 = Quarter (cut in 4, take 1)\n3/4 = Three quarters', order: 3),
+            LessonContent(type: 'text', content: '💡 Equivalent fractions: 1/2 = 2/4 = 4/8\nThey all mean the same amount!', order: 4),
           ],
           xpReward: 100,
-        ),
-        Lesson(
-          id: 'math_5_fractions_2',
-          title: 'Fraction Quiz',
-          description: 'Test your understanding of fractions',
-          subject: Subject.Math,
-          classLevel: 5,
-          level: 2,
-          category: 'Fractions',
-          content: [LessonContent(type: 'text', content: 'Identify the parts of a fraction!', order: 1)],
-          xpReward: 120,
           quiz: Quiz(
             questions: [
               Question(
                 id: 'q_math_5_frac_1',
                 type: 'multiple_choice',
-                question: 'In the fraction 3/4, what is the numerator?',
-                options: ['3', '4', '7', '1'],
-                correctAnswer: '3',
-                explanation: 'The numerator is the TOP number. Here it is 3.',
+                question: 'In 5/8, what is the Numerator?',
+                options: ['5', '8', '3', '13'],
+                correctAnswer: '5',
+                explanation: 'The TOP number is the Numerator. It\'s 5.',
               ),
               Question(
                 id: 'q_math_5_frac_2',
                 type: 'multiple_choice',
-                question: 'What fraction means "half"?',
-                options: ['1/4', '2/3', '1/2', '3/4'],
-                correctAnswer: '1/2',
-                explanation: '1/2 means one part out of two equal parts = half.',
+                question: 'Which fraction is the same as 1/2?',
+                options: ['2/4', '1/3', '3/5', '4/9'],
+                correctAnswer: '2/4',
+                explanation: '2/4 simplifies to 1/2. Both mean half!',
               ),
-            ]
-          )
+              Question(
+                id: 'q_math_5_frac_3',
+                type: 'fill_blank',
+                question: 'In 3/4, the Denominator is ___',
+                options: ['3', '4', '7', '1'],
+                correctAnswer: '4',
+                explanation: 'The BOTTOM number (4) is the Denominator.',
+              ),
+            ],
+          ),
+        ),
+        Lesson(
+          id: 'math_5_decimals_1',
+          title: 'Introduction to Decimals',
+          description: 'Learn decimals, then complete the task to earn XP!',
+          subject: Subject.Math,
+          classLevel: 5,
+          level: 1,
+          category: 'Decimals',
+          content: [
+            LessonContent(type: 'text', content: '🔢 Decimals are fractions written with a dot!', order: 1),
+            LessonContent(type: 'text', content: '1/2 = 0.5\n1/4 = 0.25\n3/4 = 0.75', order: 2),
+            LessonContent(type: 'text', content: 'The dot (.) separates the whole number from the part.\n3.5 means "3 and a half"', order: 3),
+          ],
+          xpReward: 100,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_math_5_dec_1',
+                type: 'multiple_choice',
+                question: 'What is 1/2 as a decimal?',
+                options: ['0.25', '0.5', '0.75', '1.2'],
+                correctAnswer: '0.5',
+                explanation: '1/2 = 0.5 (half).',
+              ),
+              Question(
+                id: 'q_math_5_dec_2',
+                type: 'multiple_choice',
+                question: '3.5 means?',
+                options: ['35 whole', '3 and a half', '3 and a quarter', '0.35'],
+                correctAnswer: '3 and a half',
+                explanation: '3.5 = 3 + 0.5 = 3 and a half.',
+              ),
+            ],
+          ),
         ),
       ]);
     } else if (classLevel == 6) {
@@ -336,10 +601,29 @@ class MultiSubjectService {
           level: 1,
           category: 'Algebra',
           content: [
-            LessonContent(type: 'text', content: 'Algebra uses letters to stand for unknown numbers!', order: 1),
-            LessonContent(type: 'text', content: 'A variable is a letter whose value we don\'t know.\nExample: x, y, z', order: 2),
-            LessonContent(type: 'text', content: 'A constant is a fixed number.\nExample: 5, 10, or 100 never change.', order: 3),
-            LessonContent(type: 'text', content: 'Solving an equation:\nIf x + 2 = 5\nThen x = 5 - 2 = 3 ✓', order: 4),
+            LessonContent(
+              type: 'text',
+              content: 'Algebra uses letters to stand for unknown numbers!',
+              order: 1,
+            ),
+            LessonContent(
+              type: 'text',
+              content:
+                  'A variable is a letter whose value we don\'t know.\nExample: x, y, z',
+              order: 2,
+            ),
+            LessonContent(
+              type: 'text',
+              content:
+                  'A constant is a fixed number.\nExample: 5, 10, or 100 never change.',
+              order: 3,
+            ),
+            LessonContent(
+              type: 'text',
+              content:
+                  'Solving an equation:\nIf x + 2 = 5\nThen x = 5 - 2 = 3 ✓',
+              order: 4,
+            ),
           ],
           xpReward: 120,
         ),
@@ -351,7 +635,13 @@ class MultiSubjectService {
           classLevel: 6,
           level: 2,
           category: 'Algebra',
-          content: [LessonContent(type: 'text', content: 'Find the value of the variable!', order: 1)],
+          content: [
+            LessonContent(
+              type: 'text',
+              content: 'Find the value of the variable!',
+              order: 1,
+            ),
+          ],
           xpReward: 150,
           quiz: Quiz(
             questions: [
@@ -369,10 +659,11 @@ class MultiSubjectService {
                 question: 'Which letter is a "variable"?',
                 options: ['5', 'x', '100', '0'],
                 correctAnswer: 'x',
-                explanation: 'x is a letter (variable). Numbers like 5 or 100 are constants.',
+                explanation:
+                    'x is a letter (variable). Numbers like 5 or 100 are constants.',
               ),
-            ]
-          )
+            ],
+          ),
         ),
       ]);
     } else {
@@ -387,14 +678,23 @@ class MultiSubjectService {
           level: 1,
           category: 'Mathematics',
           content: [
-            LessonContent(type: 'text', content: 'Welcome to Class $classLevel Mathematics!', order: 1),
-            LessonContent(type: 'text', content: 'In this class you will learn:\n• Number operations\n• Geometry\n• Measurement\n• Problem solving', order: 2),
+            LessonContent(
+              type: 'text',
+              content: 'Welcome to Class $classLevel Mathematics!',
+              order: 1,
+            ),
+            LessonContent(
+              type: 'text',
+              content:
+                  'In this class you will learn:\n• Number operations\n• Geometry\n• Measurement\n• Problem solving',
+              order: 2,
+            ),
           ],
           xpReward: 50,
         ),
       ]);
     }
-    
+
     return lessons;
   }
 
@@ -403,225 +703,256 @@ class MultiSubjectService {
     List<Lesson> lessons = [];
 
     if (classLevel == 1) {
-      // Alphabets: Learn letters + quiz in one level
-      lessons.add(Lesson(
-        id: 'eng_alphabets_1_1',
-        title: 'Alphabets A to E',
-        description: 'Learn letter sounds then complete the task to earn XP!',
-        subject: Subject.English,
-        classLevel: 1,
-        level: 1,
-        category: 'Alphabets',
-        content: [
-          LessonContent(type: 'text', content: '🔤 Every letter has a sound. Let\'s learn A to E!', order: 1),
-          LessonContent(type: 'text', content: 'A says "Ah" → Apple 🍎\nB says "Buh" → Ball ⚽\nC says "Cuh" → Cat 🐱', order: 2),
-          LessonContent(type: 'text', content: 'D says "Duh" → Dog 🐶\nE says "Eh" → Egg 🥚', order: 3),
-          LessonContent(type: 'text', content: '💡 Repeat aloud:\nA, B, C, D, E!\nA... B... C... D... E...', order: 4),
-        ],
-        xpReward: 40,
-        quiz: Quiz(questions: [
-          Question(
-            id: 'q_eng_1_alpha_1',
-            type: 'multiple_choice',
-            question: 'Which letter makes the "Ah" sound?',
-            options: ['B', 'A', 'C', 'D'],
-            correctAnswer: 'A',
-            explanation: 'A says "Ah" like in Apple!',
+      // Alphabets: Step 1 - Learn
+      lessons.add(
+        Lesson(
+          id: 'eng_alphabets_1_1',
+          title: 'Learn Alphabets A to E',
+          description: 'Explore letters A to E with sounds and pictures!',
+          subject: Subject.English,
+          classLevel: 1,
+          level: 1,
+          category: 'Alphabets',
+          content: [
+            LessonContent(type: 'text', content: '🔤 Every letter has a sound. Let\'s learn A to E!', order: 1),
+            LessonContent(type: 'text', content: 'A says "Ah" → Apple 🍎\nB says "Buh" → Ball ⚽\nC says "Cuh" → Cat 🐱', order: 2),
+            LessonContent(type: 'text', content: 'D says "Duh" → Dog 🐶\nE says "Eh" → Egg 🥚', order: 3),
+            LessonContent(type: 'text', content: '💡 Repeat aloud: A, B, C, D, E!', order: 4),
+          ],
+          xpReward: 50,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_eng_1_alpha_1',
+                type: 'multiple_choice',
+                question: 'Which letter makes the "Ah" sound?',
+                options: ['B', 'A', 'C', 'D'],
+                correctAnswer: 'A',
+                explanation: 'A says "Ah" like in Apple!',
+              ),
+              Question(
+                id: 'q_eng_1_alpha_2',
+                type: 'fill_blank',
+                question: 'A, B, ___, D, E',
+                options: ['A', 'C', 'F', 'Z'],
+                correctAnswer: 'C',
+                explanation: 'The order is A, B, C, D, E.',
+              ),
+            ],
           ),
-          Question(
-            id: 'q_eng_1_alpha_2',
-            type: 'fill_blank',
-            question: 'A, B, ___, D, E',
-            options: ['A', 'C', 'F', 'Z'],
-            correctAnswer: 'C',
-            explanation: 'The order is A, B, C, D, E.',
-          ),
-          Question(
-            id: 'q_eng_1_alpha_3',
-            type: 'multiple_choice',
-            question: 'B is for ___?',
-            options: ['Apple', 'Cat', 'Ball', 'Egg'],
-            correctAnswer: 'Ball',
-            explanation: 'B says "Buh" like in Ball!',
-          ),
-        ]),
-      ));
+        ),
+      );
 
-      // Grammar: Simple words - Learn + quiz
-      lessons.add(Lesson(
-        id: 'eng_words_1_1',
-        title: 'Simple 3-Letter Words',
-        description: 'Build words and complete the task to earn XP!',
-        subject: Subject.English,
-        classLevel: 1,
-        level: 1,
-        category: 'Grammar',
-        content: [
-          LessonContent(type: 'text', content: '📝 Let\'s build short words!', order: 1),
-          LessonContent(type: 'text', content: 'C + A + T = CAT 🐱\nB + A + T = BAT 🏏\nM + A + T = MAT 🪆', order: 2),
-          LessonContent(type: 'text', content: 'D + O + G = DOG 🐶\nC + U + P = CUP ☕', order: 3),
-          LessonContent(type: 'text', content: '💡 CAT, BAT, MAT all rhyme!\nThey all end with "-AT"', order: 4),
-        ],
-        xpReward: 50,
-        quiz: Quiz(questions: [
-          Question(
-            id: 'q_eng_1_word_1',
-            type: 'multiple_choice',
-            question: 'What does C + A + T spell?',
-            options: ['BAT', 'CAT', 'MAT', 'DOG'],
-            correctAnswer: 'CAT',
-            explanation: 'C + A + T = CAT 🐱',
+      // Grammar: 3-Letter Words (combined learn + quiz)
+      lessons.add(
+        Lesson(
+          id: 'eng_words_1_1',
+          title: '3-Letter Words',
+          description: 'Learn to build words, then complete the task to earn XP!',
+          subject: Subject.English,
+          classLevel: 1,
+          level: 1,
+          category: 'Grammar',
+          content: [
+            LessonContent(type: 'text', content: '📝 Let\'s build short words!', order: 1),
+            LessonContent(type: 'text', content: 'C + A + T = CAT 🐱\nB + A + T = BAT 🏏\nM + A + T = MAT 🪆', order: 2),
+            LessonContent(type: 'text', content: 'D + O + G = DOG 🐶\nC + U + P = CUP ☕', order: 3),
+            LessonContent(type: 'text', content: '💡 CAT, BAT, MAT all rhyme — they end with "-AT"!', order: 4),
+          ],
+          xpReward: 60,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_eng_1_word_1',
+                type: 'multiple_choice',
+                question: 'What does C + A + T spell?',
+                options: ['BAT', 'CAT', 'MAT', 'DOG'],
+                correctAnswer: 'CAT',
+                explanation: 'C + A + T = CAT 🐱',
+              ),
+              Question(
+                id: 'q_eng_1_word_2',
+                type: 'multiple_choice',
+                question: 'Which word rhymes with CAT?',
+                options: ['DOG', 'CUP', 'BAT', 'EGG'],
+                correctAnswer: 'BAT',
+                explanation: 'CAT and BAT both end with -AT!',
+              ),
+            ],
           ),
-          Question(
-            id: 'q_eng_1_word_2',
-            type: 'multiple_choice',
-            question: 'Which word rhymes with CAT?',
-            options: ['DOG', 'CUP', 'BAT', 'EGG'],
-            correctAnswer: 'BAT',
-            explanation: 'CAT and BAT both end with -AT!',
-          ),
-          Question(
-            id: 'q_eng_1_word_3',
-            type: 'fill_blank',
-            question: 'D + O + G = ___',
-            options: ['CAT', 'DOG', 'BAT', 'CUP'],
-            correctAnswer: 'DOG',
-            explanation: 'D + O + G = DOG 🐶',
-          ),
-        ]),
-      ));
+        ),
+      );
     } else if (classLevel == 2) {
       lessons.addAll([
         Lesson(
           id: 'eng_phonics_2_1',
-          title: 'Letter Sounds (A-M)',
-          description: 'Learn letter sounds then complete the task!',
+          title: 'Phonics: Letter Sounds (A-M)',
+          description: 'Learn letter sounds, then complete the task to earn XP!',
           subject: Subject.English,
           classLevel: 2,
           level: 1,
           category: 'Alphabets',
           content: [
-            LessonContent(type: 'text', content: 'Let\'s review letter sounds A to M!', order: 1),
+            LessonContent(type: 'text', content: '🔤 Let\'s review letter sounds A to M!', order: 1),
             LessonContent(type: 'text', content: 'A-Apple, B-Ball, C-Cat, D-Dog, E-Egg', order: 2),
-            LessonContent(type: 'text', content: 'F-Fish, G-Goat, H-Hat, I-Ink, J-Jar', order: 3),
-            LessonContent(type: 'text', content: 'K-Kite, L-Lion, M-Mango', order: 4),
+            LessonContent(type: 'text', content: 'F-Fish 🐟, G-Goat 🐐, H-Hat 🎩, I-Ink 🖊️, J-Jar 🫙', order: 3),
+            LessonContent(type: 'text', content: 'K-Kite 🪁, L-Lion 🦁, M-Mango 🥭', order: 4),
           ],
-          xpReward: 40,
-          quiz: Quiz(questions: [
-            Question(
-              id: 'q_eng_2_alpha_1',
-              type: 'multiple_choice',
-              question: 'F is for ___?',
-              options: ['Goat', 'Fish', 'Hat', 'Ink'],
-              correctAnswer: 'Fish',
-              explanation: 'F is for Fish 🐟',
-            ),
-          ]),
+          xpReward: 60,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_eng_2_alpha_1',
+                type: 'multiple_choice',
+                question: 'F is for ___?',
+                options: ['Goat', 'Fish', 'Hat', 'Ink'],
+                correctAnswer: 'Fish',
+                explanation: 'F is for Fish 🐟',
+              ),
+              Question(
+                id: 'q_eng_2_alpha_2',
+                type: 'multiple_choice',
+                question: 'Which letter comes after J?',
+                options: ['I', 'K', 'L', 'H'],
+                correctAnswer: 'K',
+                explanation: 'J, K, L... K comes after J!',
+              ),
+            ],
+          ),
         ),
         Lesson(
           id: 'eng_words_2_1',
-          title: 'Three Letter Words',
-          description: 'Learn and practise CVC words',
+          title: 'Building Words',
+          description: 'Learn to spell words, then complete the task!',
           subject: Subject.English,
           classLevel: 2,
           level: 1,
           category: 'Grammar',
           content: [
-            LessonContent(type: 'text', content: 'Let\'s build words!', order: 1),
-            LessonContent(type: 'text', content: 'C + A + T = CAT\nB + A + T = BAT\nM + A + T = MAT', order: 2),
-            LessonContent(type: 'text', content: 'CAT, BAT, MAT all rhyme! They end with -AT.', order: 3),
+            LessonContent(type: 'text', content: '📝 Let\'s spell words using letters!', order: 1),
+            LessonContent(type: 'text', content: 'C+A+T = CAT 🐱\nB+A+T = BAT 🏏\nM+A+T = MAT 🪆', order: 2),
+            LessonContent(type: 'text', content: 'CAT, BAT, MAT all rhyme — they end with "-AT"!', order: 3),
           ],
-          xpReward: 40,
-          quiz: Quiz(questions: [
-            Question(
-              id: 'q_eng_2_word_1',
-              type: 'multiple_choice',
-              question: 'Which word rhymes with CAT?',
-              options: ['DOG', 'CUP', 'BAT', 'EGG'],
-              correctAnswer: 'BAT',
-              explanation: 'CAT and BAT both end with -AT!',
-            ),
-          ]),
+          xpReward: 60,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_eng_2_word_1',
+                type: 'multiple_choice',
+                question: 'Which word rhymes with CAT?',
+                options: ['DOG', 'CUP', 'BAT', 'EGG'],
+                correctAnswer: 'BAT',
+                explanation: 'CAT and BAT both end with -AT!',
+              ),
+            ],
+          ),
+        ),
+      ]);
+    } else if (classLevel == 3 || classLevel == 4) {
+      lessons.addAll([
+        Lesson(
+          id: 'eng_grammar_${classLevel}_1',
+          title: 'Nouns and Verbs',
+          description: 'Learn parts of speech, then complete the task!',
+          subject: Subject.English,
+          classLevel: classLevel,
+          level: 1,
+          category: 'Grammar',
+          content: [
+            LessonContent(type: 'text', content: '📚 English sentences have Parts of Speech!', order: 1),
+            LessonContent(type: 'text', content: 'Nouns = naming words (person, place, thing)\nExamples: Dog 🐶, Kathmandu 🏔️, Book 📖', order: 2),
+            LessonContent(type: 'text', content: 'Verbs = action words (things you do)\nExamples: Run 🏃, Eat 🍽️, Read 📖', order: 3),
+            LessonContent(type: 'text', content: '💡 Every sentence needs a Noun AND a Verb!\n"The dog runs" — dog=Noun, runs=Verb', order: 4),
+          ],
+          xpReward: 70,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_eng_${classLevel}_noun_1',
+                type: 'multiple_choice',
+                question: 'Which word is a Noun?',
+                options: ['Run', 'Apple', 'Jump', 'Fast'],
+                correctAnswer: 'Apple',
+                explanation: 'Apple is a thing — so it\'s a Noun!',
+              ),
+              Question(
+                id: 'q_eng_${classLevel}_verb_1',
+                type: 'multiple_choice',
+                question: 'Which word is a Verb (action)?',
+                options: ['Table', 'Happy', 'Jump', 'Blue'],
+                correctAnswer: 'Jump',
+                explanation: '"Jump" is an action — you can do it!',
+              ),
+            ],
+          ),
         ),
       ]);
     } else if (classLevel == 5 || classLevel == 6) {
       lessons.addAll([
         Lesson(
           id: 'eng_grammar_${classLevel}_1',
-          title: 'Nouns and Verbs',
-          description: 'Learn parts of speech then complete the task!',
+          title: 'Advanced Grammar: Nouns, Verbs & Adjectives',
+          description: 'Master parts of speech, then complete the task!',
           subject: Subject.English,
           classLevel: classLevel,
           level: 1,
           category: 'Grammar',
           content: [
-            LessonContent(type: 'text', content: 'Nouns are naming words.\nExample: Dog, Kathmandu, Joy', order: 1),
-            LessonContent(type: 'text', content: 'Verbs are action words.\nExample: Run, Sleep, Play', order: 2),
-            LessonContent(type: 'text', content: 'Every sentence needs a verb!', order: 3),
+            LessonContent(type: 'text', content: '📚 A Noun names a person, place, or thing. (Student, Nepal, Pen)', order: 1),
+            LessonContent(type: 'text', content: 'A Verb is an action or state of being. (Run, Think, Is)', order: 2),
+            LessonContent(type: 'text', content: 'An Adjective describes a Noun. (Big, Smart, Red)', order: 3),
+            LessonContent(type: "text", content: "✅ Example: The smart student reads books. Nouns: student, books | Verb: reads | Adjective: smart", order: 4),
           ],
-          xpReward: 80,
-          quiz: Quiz(questions: [
-            Question(
-              id: 'q_eng_gv_1_$classLevel',
-              type: 'multiple_choice',
-              question: 'Which word is a Verb (Action)?',
-              options: ['Apple', 'Jump', 'Smart', 'Table'],
-              correctAnswer: 'Jump',
-              explanation: '"Jump" is an action — you can do it!',
-            ),
-            Question(
-              id: 'q_eng_gv_2_$classLevel',
-              type: 'multiple_choice',
-              question: 'Which word is a Noun (Name)?',
-              options: ['Run', 'Fast', 'Kathmandu', 'Jump'],
-              correctAnswer: 'Kathmandu',
-              explanation: 'Kathmandu is a place — a naming word (Noun).',
-            ),
-          ]),
-        ),
-        Lesson(
-          id: 'eng_writing_${classLevel}_1',
-          title: 'Sentence Structure (SVO)',
-          description: 'Build sentences then complete the task!',
-          subject: Subject.English,
-          classLevel: classLevel,
-          level: 1,
-          category: 'Alphabets',
-          content: [
-            LessonContent(type: 'text', content: 'A sentence follows S → V → O order.', order: 1),
-            LessonContent(type: 'text', content: 'Subject: Who? (The boy)\nVerb: Does what? (eats)\nObject: What? (an apple)', order: 2),
-            LessonContent(type: 'text', content: '✅ "The boy eats an apple."\nSubject=boy, Verb=eats, Object=apple', order: 3),
-          ],
-          xpReward: 90,
-          quiz: Quiz(questions: [
-            Question(
-              id: 'q_eng_svo_1_$classLevel',
-              type: 'multiple_choice',
-              question: 'In "The girl reads a book", what is the Verb?',
-              options: ['girl', 'reads', 'book', 'the'],
-              correctAnswer: 'reads',
-              explanation: '"reads" is the action (Verb) in this sentence.',
-            ),
-          ]),
+          xpReward: 100,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_eng_gv_1_$classLevel',
+                type: 'multiple_choice',
+                question: 'In "The student studies hard", which word is the Verb?',
+                options: ['The', 'student', 'studies', 'hard'],
+                correctAnswer: 'studies',
+                explanation: '"Studies" is the action — it\'s the Verb!',
+              ),
+              Question(
+                id: 'q_eng_adj_1_$classLevel',
+                type: 'multiple_choice',
+                question: 'In "The red ball", which word is the Adjective?',
+                options: ['The', 'red', 'ball', 'a'],
+                correctAnswer: 'red',
+                explanation: '"Red" describes the ball — it\'s an Adjective!',
+              ),
+            ],
+          ),
         ),
       ]);
     }
 
     if (lessons.isEmpty) {
-      lessons.add(Lesson(
-        id: 'english_${classLevel}_gen_1',
-        title: 'Class $classLevel English',
-        description: 'Read and complete the task to earn XP!',
-        subject: Subject.English,
-        classLevel: classLevel,
-        level: 1,
-        category: 'Grammar',
-        content: [
-          LessonContent(type: 'text', content: 'Welcome to Class $classLevel English!', order: 1),
-          LessonContent(type: 'text', content: 'We will learn to read, write and speak in English.', order: 2),
-        ],
-        xpReward: 50,
-      ));
+      lessons.add(
+        Lesson(
+          id: 'english_${classLevel}_gen_1',
+          title: 'Class $classLevel English',
+          description: 'Read and complete the task to earn XP!',
+          subject: Subject.English,
+          classLevel: classLevel,
+          level: 1,
+          category: 'Grammar',
+          content: [
+            LessonContent(
+              type: 'text',
+              content: 'Welcome to Class $classLevel English!',
+              order: 1,
+            ),
+            LessonContent(
+              type: 'text',
+              content: 'We will learn to read, write and speak in English.',
+              order: 2,
+            ),
+          ],
+          xpReward: 50,
+        ),
+      );
     }
 
     return lessons;
@@ -632,228 +963,457 @@ class MultiSubjectService {
     List<Lesson> lessons = [];
 
     if (classLevel == 1) {
-      // Barnamala: Vowels - Learn + Quiz in one level
-      lessons.add(Lesson(
-        id: 'nep_barnamala_1_1',
-        title: 'Nepali Vowels (स्वर)',
-        description: 'Learn vowels then complete the task to earn XP!',
-        subject: Subject.Nepali,
-        classLevel: 1,
-        level: 1,
-        category: 'Barnamala',
-        content: [
-          LessonContent(type: 'text', content: '🔤 Let\'s learn Nepali Vowels (स्वर वर्णमाला)!', order: 1),
-          LessonContent(type: 'text', content: 'अ → Aa (like in Apple)\nआ → Aa (like in Father)\nइ → I (like in Ink)', order: 2),
-          LessonContent(type: 'text', content: 'ई → Ee (like in Eat)\nउ → U (like in Up)\nऊ → Oo (like in Food)', order: 3),
-          LessonContent(type: 'text', content: '💡 Practice saying aloud:\nअ, आ, इ, ई, उ, ऊ...', order: 4),
-        ],
-        xpReward: 40,
-        quiz: Quiz(questions: [
-          Question(
-            id: 'q_nep_1_barna_1',
-            type: 'multiple_choice',
-            question: 'Which is the Nepali vowel for "Aa"?',
-            options: ['अ', 'आ', 'इ', 'ई'],
-            correctAnswer: 'आ',
-            explanation: 'आ makes the long "Aa" sound like in Father.',
-          ),
-          Question(
-            id: 'q_nep_1_barna_2',
-            type: 'multiple_choice',
-            question: 'How many vowels did we learn today?',
-            options: ['4', '5', '6', '7'],
-            correctAnswer: '6',
-            explanation: 'We learned: अ, आ, इ, ई, उ, ऊ — that is 6 vowels!',
-          ),
-          Question(
-            id: 'q_nep_1_barna_3',
-            type: 'multiple_choice',
-            question: 'What is the FIRST vowel in Nepali?',
-            options: ['इ', 'आ', 'अ', 'ई'],
-            correctAnswer: 'अ',
-            explanation: 'अ is the very first vowel in Nepali!',
-          ),
-        ]),
-      ));
-
-      // Numbers - Learn + Quiz
-      lessons.add(Lesson(
-        id: 'nep_numbers_1_1',
-        title: 'Nepali Numbers (१-५)',
-        description: 'Learn to count in Nepali then complete the task!',
-        subject: Subject.Nepali,
-        classLevel: 1,
-        level: 1,
-        category: 'Numbers',
-        content: [
-          LessonContent(type: 'text', content: '🔢 Let\'s count in Nepali!', order: 1),
-          LessonContent(type: 'text', content: '१ = One (एक)\n२ = Two (दुई)\n३ = Three (तीन)', order: 2),
-          LessonContent(type: 'text', content: '४ = Four (चार)\n५ = Five (पाँच)', order: 3),
-          LessonContent(type: 'text', content: '💡 Practice:\nएक, दुई, तीन, चार, पाँच!', order: 4),
-        ],
-        xpReward: 40,
-        quiz: Quiz(questions: [
-          Question(
-            id: 'q_nep_1_num_1',
-            type: 'multiple_choice',
-            question: 'What is "3" in Nepali numbers?',
-            options: ['१', '२', '३', '४'],
-            correctAnswer: '३',
-            explanation: '३ represents Three (तीन) in Nepali.',
-          ),
-          Question(
-            id: 'q_nep_1_num_2',
-            type: 'multiple_choice',
-            question: 'What is "पाँच" in English?',
-            options: ['Three', 'Four', 'Five', 'Two'],
-            correctAnswer: 'Five',
-            explanation: 'पाँच = Five = ५',
-          ),
-          Question(
-            id: 'q_nep_1_num_3',
-            type: 'fill_blank',
-            question: 'एक, दुई, ___, चार, पाँच',
-            options: ['दुई', 'तीन', 'छ', 'सात'],
-            correctAnswer: 'तीन',
-            explanation: 'The order is एक, दुई, तीन, चार, पाँच.',
-          ),
-        ]),
-      ));
-
-      // Flashcards - Learn + Quiz
-      lessons.add(Lesson(
-        id: 'nep_flash_1_1',
-        title: 'Animal Names in Nepali',
-        description: 'Learn animal names then complete the task!',
-        subject: Subject.Nepali,
-        classLevel: 1,
-        level: 1,
-        category: 'Flashcards',
-        content: [
-          LessonContent(type: 'text', content: '🐾 Let\'s learn animal names in Nepali!', order: 1),
-          LessonContent(type: 'text', content: 'Lion = सिंह (Singha)\nElephant = हात्ती (Hatti)\nCow = गाई (Gai)', order: 2),
-          LessonContent(type: 'text', content: 'Dog = कुकुर (Kukur)\nCat = बिरालो (Biralo)\nBird = चरा (Chara)', order: 3),
-          LessonContent(type: 'text', content: '💡 Say them aloud:\nसिंह, हात्ती, गाई, कुकुर, बिरालो!', order: 4),
-        ],
-        xpReward: 40,
-        quiz: Quiz(questions: [
-          Question(
-            id: 'q_nep_1_flash_1',
-            type: 'translation_match',
-            question: 'Match the animals to their Nepali names!',
-            answerPairs: {
-              'Lion': 'सिंह',
-              'Cow': 'गाई',
-              'Dog': 'कुकुर',
-              'Cat': 'बिरालो',
-            },
-          ),
-        ]),
-      ));
-    } else if (classLevel == 2) {
-      lessons.addAll([
+      // ── स्वर वर्ण (Vowels) ─────────────────────────────────────────────
+      lessons.add(
         Lesson(
-          id: 'nep_barnamala_2_1',
-          title: 'Nepali Consonants (क-ङ)',
-          description: 'Learn consonants then complete the task!',
+          id: 'nep_swar_1_1',
+          title: 'नेपाली स्वर वर्ण (अ–ऊ)',
+          description: 'स्वर वर्णहरू सिक्नुहोस् र प्रश्न गर्नुहोस्!',
+          subject: Subject.Nepali,
+          classLevel: 1,
+          level: 1,
+          category: 'Barnamala',
+          content: [
+            LessonContent(type: 'text', content: '🔤 आउनुहोस् स्वर वर्णमाला सिकौं!', order: 1),
+            LessonContent(type: 'text', content: 'अ – अनार 🍎\nआ – आमा 👩\nइ – इनार 🪣', order: 2),
+            LessonContent(type: 'text', content: 'ई – ईश्वर 🙏\nउ – उँट 🐫\nऊ – ऊन 🧶', order: 3),
+            LessonContent(type: 'text', content: '�� जोरले पढ्नुहोस्: अ, आ, इ, ई, उ, ऊ!', order: 4),
+          ],
+          xpReward: 50,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_nep_1_swar_1',
+                type: 'multiple_choice',
+                question: 'नेपाली स्वर वर्णमालाको पहिलो अक्षर कुन हो?',
+                options: ['इ', 'आ', 'अ', 'ई'],
+                correctAnswer: 'अ',
+                explanation: 'अ नेपाली वर्णमालाको पहिलो स्वर अक्षर हो।',
+              ),
+              Question(
+                id: 'q_nep_1_swar_2',
+                type: 'fill_blank',
+                question: 'अ, ___, इ, ई, उ, ऊ',
+                options: ['ए', 'ओ', 'आ', 'अ'],
+                correctAnswer: 'आ',
+                explanation: 'सही क्रम: अ, आ, इ, ई, उ, ऊ।',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      // ── नेपाली अंक (Numbers 1–5) ──────────────────────────────────────
+      lessons.add(
+        Lesson(
+          id: 'nep_ank_1_1',
+          title: 'नेपाली अंक (१–५)',
+          description: 'नेपाली अंक सिक्नुहोस् र प्रश्न गर्नुहोस्!',
+          subject: Subject.Nepali,
+          classLevel: 1,
+          level: 1,
+          category: 'Numbers',
+          content: [
+            LessonContent(type: 'text', content: '🔢 आउनुहोस् नेपाली अंक सिकौं!', order: 1),
+            LessonContent(type: 'text', content: '१ = एक 🥇\n२ = दुई ✌️\n३ = तीन 🔱', order: 2),
+            LessonContent(type: 'text', content: '४ = चार 🍀\n५ = पाँच 🖐️', order: 3),
+            LessonContent(type: 'text', content: '💡 दोहोर्याउनुहोस्: एक, दुई, तीन, चार, पाँच!', order: 4),
+          ],
+          xpReward: 50,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_nep_1_ank_1',
+                type: 'multiple_choice',
+                question: '"तीन" लाई नेपाली अंकमा कसरी लेख्छन्?',
+                options: ['१', '२', '३', '४'],
+                correctAnswer: '३',
+                explanation: '३ भनेको तीन हो।',
+              ),
+              Question(
+                id: 'q_nep_1_ank_2',
+                type: 'fill_blank',
+                question: 'एक, दुई, ___, चार, पाँच',
+                options: ['दुई', 'तीन', 'छ', 'सात'],
+                correctAnswer: 'तीन',
+                explanation: 'सही क्रम: एक, दुई, तीन, चार, पाँच।',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      // ── जनावरका नाम (Animals) ─────────────────────────────────────────
+      lessons.add(
+        Lesson(
+          id: 'nep_janavar_1_1',
+          title: 'जनावरका नाम',
+          description: 'जनावरका नाम सिक्नुहोस् र प्रश्न गर्नुहोस्!',
+          subject: Subject.Nepali,
+          classLevel: 1,
+          level: 1,
+          category: 'Flashcards',
+          content: [
+            LessonContent(type: 'text', content: '🐾 आउनुहोस् जनावरका नाम सिकौं!', order: 1),
+            LessonContent(type: 'text', content: 'सिंह 🦁\nहात्ती 🐘\nगाई 🐄', order: 2),
+            LessonContent(type: 'text', content: 'कुकुर ��\nबिरालो 🐱\nचरा 🐦', order: 3),
+            LessonContent(type: 'text', content: '💡 जोरले भन्नुहोस्: सिंह, हात्ती, गाई, कुकुर, बिरालो!', order: 4),
+          ],
+          xpReward: 50,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_nep_1_jan_1',
+                type: 'multiple_choice',
+                question: '🦁 यो कुन जनावर हो?',
+                options: ['हात्ती', 'सिंह', 'गाई', 'कुकुर'],
+                correctAnswer: 'सिंह',
+                explanation: '🦁 यो सिंह हो।',
+              ),
+              Question(
+                id: 'q_nep_1_jan_2',
+                type: 'multiple_choice',
+                question: '🐶 यो कुन जनावर हो?',
+                options: ['बिरालो', 'चरा', 'कुकुर', 'सिंह'],
+                correctAnswer: 'कुकुर',
+                explanation: '🐶 यो कुकुर हो।',
+              ),
+              Question(
+                id: 'q_nep_1_jan_3',
+                type: 'fill_blank',
+                question: '🐘 यो ___ हो।',
+                options: ['गाई', 'हात्ती', 'बिरालो', 'चरा'],
+                correctAnswer: 'हात्ती',
+                explanation: '🐘 यो हात्ती हो।',
+              ),
+            ],
+          ),
+        ),
+      );
+
+    } else if (classLevel == 2) {
+      // ── व्यञ्जन वर्ण (Consonants क–ङ) ──────────────────────────────────
+      lessons.add(
+        Lesson(
+          id: 'nep_byanjan_2_1',
+          title: 'नेपाली व्यञ्जन (क–ङ)',
+          description: 'व्यञ्जन वर्णहरू सिक्नुहोस् र प्रश्न गर्नुहोस्!',
           subject: Subject.Nepali,
           classLevel: 2,
           level: 1,
           category: 'Barnamala',
           content: [
-            LessonContent(type: 'text', content: 'Now let\'s learn the consonants (व्यञ्जन)!', order: 1),
-            LessonContent(type: 'text', content: 'क - Ka (कपाल: Kapal)\nख - Kha (खरायो: Kharayo)\nग - Ga (गाई: Gai)', order: 2),
-            LessonContent(type: 'text', content: 'घ - Gha (घर: Ghar)\nङ - Nga', order: 3),
+            LessonContent(type: 'text', content: '🔤 आउनुहोस् व्यञ्जन वर्ण सिकौं!', order: 1),
+            LessonContent(type: 'text', content: 'क – कपाल 💇\nख – खरायो 🐇\nग – गाई 🐄', order: 2),
+            LessonContent(type: 'text', content: 'घ – घर 🏠\nङ – ङ्याउरो 🐱', order: 3),
+            LessonContent(type: 'text', content: '💡 दोहोर्याउनुहोस्: क, ख, ग, घ, ङ!', order: 4),
           ],
-          xpReward: 40,
-          quiz: Quiz(questions: [
-            Question(
-              id: 'q_nep_2_barna_1',
-              type: 'multiple_choice',
-              question: 'Which letter spells "Ka"?',
-              options: ['ख', 'क', 'ग', 'घ'],
-              correctAnswer: 'क',
-              explanation: 'क is pronounced "Ka"!',
-            ),
-          ]),
+          xpReward: 60,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_nep_2_bya_1',
+                type: 'multiple_choice',
+                question: '"खरायो" कुन अक्षरबाट सुरु हुन्छ?',
+                options: ['क', 'ख', 'ग', 'घ'],
+                correctAnswer: 'ख',
+                explanation: 'खरायो "ख" बाट सुरु हुन्छ।',
+              ),
+              Question(
+                id: 'q_nep_2_bya_2',
+                type: 'fill_blank',
+                question: 'क, ख, ___, घ, ङ',
+                options: ['च', 'ग', 'ज', 'ट'],
+                correctAnswer: 'ग',
+                explanation: 'सही क्रम: क, ख, ग, घ, ङ।',
+              ),
+            ],
+          ),
         ),
+      );
+
+      // ── फलफूलका नाम (Fruits) ─────────────────────────────────────────
+      lessons.add(
         Lesson(
-          id: 'nep_numbers_2_1',
-          title: 'Nepali Numbers (१-१०)',
-          description: 'Learn and quiz on numbers 1-10',
+          id: 'nep_phal_2_1',
+          title: 'फलफूलका नाम',
+          description: 'फलफूलका नाम सिक्नुहोस् र प्रश्न गर्नुहोस्!',
           subject: Subject.Nepali,
           classLevel: 2,
           level: 1,
-          category: 'Numbers',
+          category: 'Flashcards',
           content: [
-            LessonContent(type: 'text', content: 'Counting in Nepali up to 10!', order: 1),
-            LessonContent(type: 'text', content: '१-One, २-Two, ३-Three, ४-Four, ५-Five', order: 2),
-            LessonContent(type: 'text', content: '६-Six, ७-Seven, ८-Eight, ९-Nine, १०-Ten', order: 3),
-          ],
-          xpReward: 40,
-          quiz: Quiz(questions: [
-            Question(
-              id: 'q_nep_2_num_1',
-              type: 'multiple_choice',
-              question: 'What is "10" in Nepali?',
-              options: ['९', '१०', '८', '७'],
-              correctAnswer: '१०',
-              explanation: '१० = Ten (दश)',
-            ),
-          ]),
-        ),
-        Lesson(
-          id: 'nepali_2_barakhari_1',
-          title: 'Barakhari (का, कि, की)',
-          description: 'Learn how vowels change consonants then quiz!',
-          subject: Subject.Nepali,
-          classLevel: 2,
-          level: 1,
-          category: 'Barakhari',
-          content: [
-            LessonContent(type: 'text', content: 'Barakhari: Adding vowels to consonants changes their sound!', order: 1),
-            LessonContent(type: 'text', content: 'क + आ = का (Kaa)\nक + इ = कि (Ki)\nक + ई = की (Kee)', order: 2),
-            LessonContent(type: 'text', content: 'क + उ = कु (Ku)\nक + ऊ = कू (Koo)', order: 3),
+            LessonContent(type: 'text', content: '🍎 आउनुहोस् फलफूलका नाम सिकौं!', order: 1),
+            LessonContent(type: 'text', content: 'स्याउ 🍎\nकेरा 🍌\nआँप 🥭', order: 2),
+            LessonContent(type: 'text', content: 'सुन्तला 🍊\nअंगुर 🍇\nखरबुजा 🍈', order: 3),
+            LessonContent(type: 'text', content: '💡 मनपर्ने फल छान्नुहोस्!', order: 4),
           ],
           xpReward: 50,
-          quiz: Quiz(questions: [
-            Question(
-              id: 'q_nep_2_bara_1',
-              type: 'multiple_choice',
-              question: 'क + आ = ?',
-              options: ['कि', 'का', 'की', 'कु'],
-              correctAnswer: 'का',
-              explanation: 'क + आ = का (Kaa)',
-            ),
-          ]),
-        ),
-      ]);
-    } else if (classLevel >= 3) {
-      lessons.add(Lesson(
-        id: 'nepali_${classLevel}_byakaran_1',
-        title: 'Nepali Grammar (Byakaran)',
-        description: 'Learn grammar and complete the task!',
-        subject: Subject.Nepali,
-        classLevel: classLevel,
-        level: 1,
-        category: 'Byakaran',
-        content: [
-          LessonContent(type: 'text', content: 'Byakaran means Grammar in Nepali.', order: 1),
-          LessonContent(type: 'text', content: 'नाम (Noun): Person, Place or Thing.\nसर्वनाम (Pronoun): He, She, It.', order: 2),
-          LessonContent(type: 'text', content: 'क्रियापद (Verb): Action word.\nExample: दौड्नु (to run), खानु (to eat)', order: 3),
-        ],
-        xpReward: 80,
-        quiz: Quiz(questions: [
-          Question(
-            id: 'q_nep_bya_1_$classLevel',
-            type: 'multiple_choice',
-            question: 'What is "नाम" in English?',
-            options: ['Verb', 'Noun', 'Pronoun', 'Adjective'],
-            correctAnswer: 'Noun',
-            explanation: 'नाम = Noun (naming word)',
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_nep_2_phal_1',
+                type: 'multiple_choice',
+                question: '🍌 यो कुन फल हो?',
+                options: ['आँप', 'स्याउ', 'केरा', 'सुन्तला'],
+                correctAnswer: 'केरा',
+                explanation: '🍌 यो केरा हो।',
+              ),
+              Question(
+                id: 'q_nep_2_phal_2',
+                type: 'fill_blank',
+                question: '🍊 यो ___ हो।',
+                options: ['आँप', 'अंगुर', 'सुन्तला', 'केरा'],
+                correctAnswer: 'सुन्तला',
+                explanation: '🍊 यो सुन्तला हो।',
+              ),
+            ],
           ),
-        ]),
-      ));
+        ),
+      );
+
+    } else if (classLevel == 3) {
+      // ── नाम र सर्वनाम ─────────────────────────────────────────────────
+      lessons.add(
+        Lesson(
+          id: 'nep_nam_3_1',
+          title: 'नाम र सर्वनाम',
+          description: 'नाम र सर्वनाम सिक्नुहोस् र प्रश्न गर्नुहोस्!',
+          subject: Subject.Nepali,
+          classLevel: 3,
+          level: 1,
+          category: 'Byakaran',
+          content: [
+            LessonContent(type: 'text', content: '📚 नाम र सर्वनाम के हो?', order: 1),
+            LessonContent(type: 'text', content: 'नाम: कुनै व्यक्ति वा वस्तुको नाम।\nजस्तै: राम, कलम, काठमाडौं', order: 2),
+            LessonContent(type: 'text', content: 'सर्वनाम: नामको सट्टा प्रयोग हुने शब्द।\nजस्तै: ऊ, तिमी, हामी', order: 3),
+            LessonContent(type: 'text', content: '💡 उदाहरण: "राम स्कुल जान्छ।" → "ऊ स्कुल जान्छ।"', order: 4),
+          ],
+          xpReward: 70,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_nep_3_nam_1',
+                type: 'multiple_choice',
+                question: '"राम" कस्तो शब्द हो?',
+                options: ['नाम', 'सर्वनाम', 'क्रियापद', 'विशेषण'],
+                correctAnswer: 'नाम',
+                explanation: '"राम" एक व्यक्तिको नाम हो — त्यसैले यो नाम हो।',
+              ),
+              Question(
+                id: 'q_nep_3_nam_2',
+                type: 'multiple_choice',
+                question: '"तिमी" कस्तो शब्द हो?',
+                options: ['नाम', 'सर्वनाम', 'क्रियापद', 'विशेषण'],
+                correctAnswer: 'सर्वनाम',
+                explanation: '"तिमी" नामको सट्टा प्रयोग हुन्छ — त्यसैले यो सर्वनाम हो।',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      // ── क्रियापद (Verbs) ──────────────────────────────────────────────
+      lessons.add(
+        Lesson(
+          id: 'nep_kriya_3_1',
+          title: 'क्रियापद (कामजनाउने शब्द)',
+          description: 'क्रियापद सिक्नुहोस् र प्रश्न गर्नुहोस्!',
+          subject: Subject.Nepali,
+          classLevel: 3,
+          level: 1,
+          category: 'Byakaran',
+          content: [
+            LessonContent(type: 'text', content: '📚 क्रियापद भनेको के हो?', order: 1),
+            LessonContent(type: 'text', content: 'क्रियापद: काम जनाउने शब्द।\nजस्तै: खान्छ, पढ्छ, दौडन्छ', order: 2),
+            LessonContent(type: 'text', content: 'उदाहरण:\nराम खान्छ। 🍽️\nसीता पढ्छे। 📖\nहरि दौडन्छ। 🏃', order: 3),
+            LessonContent(type: 'text', content: '💡 हरेक वाक्यमा एउटा क्रियापद हुन्छ!', order: 4),
+          ],
+          xpReward: 70,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_nep_3_kriya_1',
+                type: 'multiple_choice',
+                question: '"सीता पढ्छे" — यस वाक्यमा क्रियापद कुन हो?',
+                options: ['सीता', 'पढ्छे', 'यो', 'त्यो'],
+                correctAnswer: 'पढ्छे',
+                explanation: '"पढ्छे" काम जनाउँछ — त्यसैले यो क्रियापद हो।',
+              ),
+              Question(
+                id: 'q_nep_3_kriya_2',
+                type: 'multiple_choice',
+                question: 'निम्न मध्ये कुन क्रियापद हो?',
+                options: ['राम', 'राम्रो', 'खान्छ', 'काठमाडौं'],
+                correctAnswer: 'खान्छ',
+                explanation: '"खान्छ" एउटा काम जनाउँछ — यो क्रियापद हो।',
+              ),
+            ],
+          ),
+        ),
+      );
+
+    } else if (classLevel == 4) {
+      // ── विशेषण (Adjectives) ───────────────────────────────────────────
+      lessons.add(
+        Lesson(
+          id: 'nep_visheshan_4_1',
+          title: 'विशेषण (गुण जनाउने शब्द)',
+          description: 'विशेषण सिक्नुहोस् र प्रश्न गर्नुहोस्!',
+          subject: Subject.Nepali,
+          classLevel: 4,
+          level: 1,
+          category: 'Byakaran',
+          content: [
+            LessonContent(type: 'text', content: '📚 विशेषण भनेको के हो?', order: 1),
+            LessonContent(type: 'text', content: 'विशेषण: नामको गुण, संख्या वा अवस्था बताउने शब्द।', order: 2),
+            LessonContent(type: 'text', content: 'उदाहरण:\nरातो फूल 🌹 (रातो = विशेषण)\nसानो बालक 👦 (सानो = विशेषण)', order: 3),
+            LessonContent(type: 'text', content: '💡 विशेषणले नामलाई थप स्पष्ट बनाउँछ!', order: 4),
+          ],
+          xpReward: 80,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_nep_4_vis_1',
+                type: 'multiple_choice',
+                question: '"रातो फूल" — यस वाक्यमा विशेषण कुन हो?',
+                options: ['फूल', 'रातो', 'र', 'यो'],
+                correctAnswer: 'रातो',
+                explanation: '"रातो" फूलको गुण बताउँछ — त्यसैले यो विशेषण हो।',
+              ),
+              Question(
+                id: 'q_nep_4_vis_2',
+                type: 'multiple_choice',
+                question: 'निम्न मध्ये कुन विशेषण हो?',
+                options: ['दौडन्छ', 'राम', 'सुन्दर', 'काठमाडौं'],
+                correctAnswer: 'सुन्दर',
+                explanation: '"सुन्दर" गुण बताउँछ — यो विशेषण हो।',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      // ── वाक्य रचना (Sentence Structure) ──────────────────────────────
+      lessons.add(
+        Lesson(
+          id: 'nep_vakya_4_1',
+          title: 'वाक्य रचना',
+          description: 'नेपाली वाक्य कसरी बन्छ सिक्नुहोस् र प्रश्न गर्नुहोस्!',
+          subject: Subject.Nepali,
+          classLevel: 4,
+          level: 1,
+          category: 'Byakaran',
+          content: [
+            LessonContent(type: 'text', content: '📚 नेपाली वाक्यको रचना!', order: 1),
+            LessonContent(type: 'text', content: 'नेपाली वाक्यमा सामान्यतः:\nकर्ता + कर्म + क्रियापद', order: 2),
+            LessonContent(type: 'text', content: 'उदाहरण:\nराम (कर्ता) स्याउ (कर्म) खान्छ (क्रियापद)।', order: 3),
+            LessonContent(type: 'text', content: '💡 कर्ता काम गर्छ, कर्म कामको वस्तु हो!', order: 4),
+          ],
+          xpReward: 80,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_nep_4_vak_1',
+                type: 'multiple_choice',
+                question: '"राम स्याउ खान्छ" — कर्ता कुन हो?',
+                options: ['स्याउ', 'खान्छ', 'राम', 'र'],
+                correctAnswer: 'राम',
+                explanation: '"राम" काम गर्छ — त्यसैले यो कर्ता हो।',
+              ),
+              Question(
+                id: 'q_nep_4_vak_2',
+                type: 'multiple_choice',
+                question: 'नेपाली वाक्यमा क्रियापद कहाँ आउँछ?',
+                options: ['सुरुमा', 'बीचमा', 'अन्तमा', 'जहाँ भए पनि'],
+                correctAnswer: 'अन्तमा',
+                explanation: 'नेपाली वाक्यमा क्रियापद प्रायः अन्तमा आउँछ।',
+              ),
+            ],
+          ),
+        ),
+      );
+
+    } else if (classLevel == 5) {
+      // ── उच्च व्याकरण (Advanced Grammar) ──────────────────────────────
+      lessons.add(
+        Lesson(
+          id: 'nep_uchha_5_1',
+          title: 'उच्च व्याकरण — कारक',
+          description: 'कारक सिक्नुहोस् र प्रश्न गर्नुहोस्!',
+          subject: Subject.Nepali,
+          classLevel: 5,
+          level: 1,
+          category: 'Byakaran',
+          content: [
+            LessonContent(type: 'text', content: '📚 कारक भनेको के हो?', order: 1),
+            LessonContent(type: 'text', content: 'कारक: वाक्यमा नाम वा सर्वनामको भूमिका बताउने तत्त्व।', order: 2),
+            LessonContent(type: 'text', content: 'मुख्य कारकहरू:\nकर्ता कारक – काम गर्नेले\nकर्म कारक – कामको वस्तु\nकरण कारक – जसद्वारा काम हुन्छ', order: 3),
+            LessonContent(type: 'text', content: '💡 उदाहरण:\nरामले (कर्ता) कलमले (करण) चिठ्ठी (कर्म) लेख्छ।', order: 4),
+          ],
+          xpReward: 100,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_nep_5_kar_1',
+                type: 'multiple_choice',
+                question: '"रामले स्याउ खायो" — "रामले" कुन कारक हो?',
+                options: ['कर्म कारक', 'कर्ता कारक', 'करण कारक', 'सम्प्रदान कारक'],
+                correctAnswer: 'कर्ता कारक',
+                explanation: '"रामले" काम गर्नेलाई जनाउँछ — त्यसैले यो कर्ता कारक हो।',
+              ),
+              Question(
+                id: 'q_nep_5_kar_2',
+                type: 'multiple_choice',
+                question: '"कलमले लेख्छ" — "कलमले" कुन कारक हो?',
+                options: ['कर्ता कारक', 'कर्म कारक', 'करण कारक', 'बिभक्ति कारक'],
+                correctAnswer: 'करण कारक',
+                explanation: '"कलमले" साधन जनाउँछ — त्यसैले यो करण कारक हो।',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      // ── लोककथा र कविता (Folk Tales & Poetry) ────────────────────────
+      lessons.add(
+        Lesson(
+          id: 'nep_lokatha_5_1',
+          title: 'नेपाली लोककथा र कविता',
+          description: 'लोककथा र कविता सिक्नुहोस् र प्रश्न गर्नुहोस्!',
+          subject: Subject.Nepali,
+          classLevel: 5,
+          level: 1,
+          category: 'Sahitya',
+          content: [
+            LessonContent(type: 'text', content: '📖 नेपाली साहित्यको परिचय!', order: 1),
+            LessonContent(type: 'text', content: 'लोककथा: पुरानो समयदेखि चल्दै आएको कथा।\nजस्तै: "भालु र बाँदर", "खरायो र कछुवा"', order: 2),
+            LessonContent(type: 'text', content: 'कविता: लयमा लेखिएको साहित्य।\nजस्तै: "मेरो प्यारो देश नेपाल"', order: 3),
+            LessonContent(type: 'text', content: '💡 लोककथाले नैतिक शिक्षा दिन्छ!', order: 4),
+          ],
+          xpReward: 100,
+          quiz: Quiz(
+            questions: [
+              Question(
+                id: 'q_nep_5_lok_1',
+                type: 'multiple_choice',
+                question: 'लोककथा भनेको के हो?',
+                options: ['नयाँ कथा', 'पुरानो चल्दै आएको कथा', 'विज्ञानको पुस्तक', 'गणितको पुस्तक'],
+                correctAnswer: 'पुरानो चल्दै आएको कथा',
+                explanation: 'लोककथा पुरानो समयदेखि चल्दै आएको परम्परागत कथा हो।',
+              ),
+              Question(
+                id: 'q_nep_5_lok_2',
+                type: 'multiple_choice',
+                question: 'कविता कस्तो साहित्य हो?',
+                options: ['गद्यमा लेखिएको', 'लयमा लेखिएको', 'नाटकको रूप', 'विज्ञानको विषय'],
+                correctAnswer: 'लयमा लेखिएको',
+                explanation: 'कविता लय र तालमा लेखिएको साहित्य हो।',
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     return lessons;
@@ -862,62 +1422,142 @@ class MultiSubjectService {
   // GK Lessons by Class
   static List<Lesson> _getGKLessons(int classLevel) {
     List<Lesson> lessons = [];
-    
-    lessons.addAll([
+
+    // Class-specific content depth
+    final isAdvanced = classLevel >= 4;
+
+    lessons.add(
       Lesson(
-        id: 'gk_${classLevel}_nepal_1',
-        title: 'About Nepal',
-        description: 'Learn about our beautiful country',
+        id: 'gk_nepal_${classLevel}_1',
+        title: classLevel <= 2 ? 'Our Country Nepal 🇳🇵' : 'Nepal: Geography & Heritage',
+        description: 'Nepal को बारेमा सिक्नुहोस् र प्रश्न गर्नुहोस्!',
         subject: Subject.GK,
         classLevel: classLevel,
         level: 1,
         category: 'Nepal Basics',
         content: [
-          LessonContent(type: 'text', content: 'Nepal is a beautiful country in South Asia!', order: 1),
-          LessonContent(type: 'text', content: 'Capital: Kathmandu\nCurrency: Nepali Rupee\nLanguage: Nepali', order: 2),
-          LessonContent(type: 'text', content: 'Mount Everest (8,848m) is the tallest mountain in the world — it is in Nepal!', order: 3),
-          LessonContent(type: 'text', content: 'Nepal has 7 provinces and 77 districts.', order: 4),
+          LessonContent(type: 'text', content: '🇳🇵 Nepal is our beautiful country in South Asia!', order: 1),
+          LessonContent(
+            type: 'text',
+            content: classLevel <= 2
+              ? 'Capital: Kathmandu ��️\nCurrency: Nepali Rupee 💰\nFlag: Two triangles 🔺🔺'
+              : 'Federal Democratic Republic of Nepal\nCapital: Kathmandu\n7 Provinces, 77 Districts',
+            order: 2,
+          ),
+          LessonContent(type: 'text', content: 'Mount Everest (8,848m) 🏔️ is the tallest peak in the world!', order: 3),
+          LessonContent(
+            type: 'text',
+            content: isAdvanced
+              ? '💡 National flower: Laligurans 🌺  National bird: Danfe 🦜\nNational animal: Cow 🐄'
+              : '💡 Nepal flag is the only non-rectangular national flag in the world!',
+            order: 4,
+          ),
         ],
-        xpReward: 30,
-      ),
-      Lesson(
-        id: 'gk_${classLevel}_nepal_2',
-        title: 'Nepal Quiz',
-        description: 'Test your knowledge about Nepal',
-        subject: Subject.GK,
-        classLevel: classLevel,
-        level: 2,
-        category: 'Nepal Basics',
-        content: [LessonContent(type: 'text', content: 'Let\'s see what you learned about Nepal!', order: 1)],
-        xpReward: 50,
+        xpReward: classLevel <= 2 ? 50 : 80,
         quiz: Quiz(
           questions: [
             Question(
-              id: 'q_gk_nepal_1_${classLevel}',
+              id: 'q_gk_nep_1_$classLevel',
               type: 'multiple_choice',
               question: 'What is the capital of Nepal?',
-              options: ['Kathmandu', 'Pokhara', 'Lalitpur', 'Bhaktapur'],
+              options: ['Kathmandu', 'Pokhara', 'Lumbini', 'Janakpur'],
               correctAnswer: 'Kathmandu',
-              explanation: 'Kathmandu is the capital and largest city of Nepal.',
+              explanation: 'Kathmandu is the capital city of Nepal.',
             ),
             Question(
-              id: 'q_gk_nepal_2_${classLevel}',
+              id: 'q_gk_nep_2_$classLevel',
               type: 'multiple_choice',
-              question: 'Which is the tallest mountain in the world?',
-              options: ['K2', 'Annapurna', 'Mount Everest', 'Lhotse'],
-              correctAnswer: 'Mount Everest',
-              explanation: 'Mount Everest at 8,848m is the highest peak on Earth, located in Nepal.',
+              question: classLevel <= 2
+                ? 'What shape is Nepal\'s flag?'
+                : 'How many provinces does Nepal have?',
+              options: classLevel <= 2
+                ? ['Rectangle', 'Two triangles', 'Circle', 'Star']
+                : ['5', '6', '7', '8'],
+              correctAnswer: classLevel <= 2 ? 'Two triangles' : '7',
+              explanation: classLevel <= 2
+                ? 'Nepal\'s flag has two triangular shapes — unique in the world!'
+                : 'Nepal has 7 Provinces since the 2015 Constitution.',
             ),
-          ]
-        )
+            if (isAdvanced)
+              Question(
+                id: 'q_gk_nep_3_$classLevel',
+                type: 'multiple_choice',
+                question: 'What is Nepal\'s national flower?',
+                options: ['Rose', 'Laligurans', 'Lotus', 'Sunflower'],
+                correctAnswer: 'Laligurans',
+                explanation: 'Laligurans (Rhododendron) is the national flower of Nepal.',
+              ),
+          ],
+        ),
       ),
-    ]);
+    );
+
+    // Second lesson — world / science GK
+    lessons.add(
+      Lesson(
+        id: 'gk_world_${classLevel}_1',
+        title: classLevel <= 2 ? 'The World Around Us 🌍' : 'World & Science GK',
+        description: 'सामान्य ज्ञान सिक्नुहोस् र प्रश्न गर्नुहोस्!',
+        subject: Subject.GK,
+        classLevel: classLevel,
+        level: 1,
+        category: 'World GK',
+        content: [
+          LessonContent(type: 'text', content: '🌍 Let\'s explore the world!', order: 1),
+          LessonContent(
+            type: 'text',
+            content: classLevel <= 2
+              ? 'Sun ☀️ gives us light and heat.\nMoon 🌙 shines at night.\nStars ⭐ are far away suns.'
+              : 'The Solar System has 8 planets.\nEarth is the 3rd planet from the Sun.\nWater covers 71% of Earth.',
+            order: 2,
+          ),
+          LessonContent(
+            type: 'text',
+            content: classLevel <= 3
+              ? 'There are 7 continents and 5 oceans on Earth.'
+              : 'Largest continent: Asia 🌏\nSmallest continent: Australia/Oceania\nDeepest ocean: Pacific Ocean',
+            order: 3,
+          ),
+          LessonContent(type: 'text', content: '💡 Curiosity leads to discovery! 🔭', order: 4),
+        ],
+        xpReward: classLevel <= 2 ? 50 : 80,
+        quiz: Quiz(
+          questions: [
+            Question(
+              id: 'q_gk_world_1_$classLevel',
+              type: 'multiple_choice',
+              question: classLevel <= 2
+                ? 'What gives us light and heat?'
+                : 'How many planets are in our Solar System?',
+              options: classLevel <= 2
+                ? ['Moon', 'Star', 'Sun', 'Cloud']
+                : ['7', '8', '9', '10'],
+              correctAnswer: classLevel <= 2 ? 'Sun' : '8',
+              explanation: classLevel <= 2
+                ? 'The Sun ☀️ gives us light and heat!'
+                : 'Our Solar System has 8 planets (Pluto is now a dwarf planet).',
+            ),
+            Question(
+              id: 'q_gk_world_2_$classLevel',
+              type: 'multiple_choice',
+              question: 'How many continents are there on Earth?',
+              options: ['5', '6', '7', '8'],
+              correctAnswer: '7',
+              explanation: 'Earth has 7 continents: Asia, Africa, Europe, N.America, S.America, Australia, Antarctica.',
+            ),
+          ],
+        ),
+      ),
+    );
 
     return lessons;
   }
 
   // Get grammar exercises for a subject and class
-  static List<GrammarExercise> getGrammarExercises(Subject subject, int classLevel) {
+  static List<GrammarExercise> getGrammarExercises(
+    Subject subject,
+    int classLevel,
+  ) {
     switch (subject) {
       case Subject.English:
         return _getEnglishGrammarExercises(classLevel);
@@ -960,7 +1600,8 @@ class MultiSubjectService {
             sentence: 'She ___ apples to the market.',
             answer: 'takes',
             options: ['takes', 'took', 'taking'],
-            explanation: 'She takes apples to the market. Past tense of "take".',
+            explanation:
+                'She takes apples to the market. Past tense of "take".',
           ),
         ];
       case 3:
@@ -972,7 +1613,8 @@ class MultiSubjectService {
             sentence: 'They ___ playing football now.',
             answer: 'are',
             options: ['are', 'is', 'am'],
-            explanation: 'They are playing football now. Present continuous tense.',
+            explanation:
+                'They are playing football now. Present continuous tense.',
           ),
         ];
     }
