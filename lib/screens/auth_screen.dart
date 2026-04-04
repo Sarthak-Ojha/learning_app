@@ -23,22 +23,18 @@ class AuthScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(),
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: const Icon(
-                  Icons.menu_book,
-                  size: 80,
-                  color: Color(0xFF29B6F6),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Image.asset(
+                  'assets/images/app_logo.png',
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.contain,
                 ),
               ),
               const SizedBox(height: 24),
               const Text(
-                'Nepal.App',
+                'GyanYatra',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 36,

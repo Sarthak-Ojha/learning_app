@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/user_provider_simple.dart';
+import '../services/firebase_service.dart';
 
 class LeaderboardScreenSimple extends StatefulWidget {
   const LeaderboardScreenSimple({super.key});
@@ -8,19 +11,6 @@ class LeaderboardScreenSimple extends StatefulWidget {
 }
 
 class _LeaderboardScreenSimpleState extends State<LeaderboardScreenSimple> {
-  final List<Map<String, dynamic>> _mockLeaderboard = [
-    {'name': 'Raj Sharma', 'xp': 250, 'level': 3, 'photoUrl': null},
-    {'name': 'Priya Karki', 'xp': 180, 'level': 2, 'photoUrl': null},
-    {'name': 'Bikram Gurung', 'xp': 150, 'level': 2, 'photoUrl': null},
-    {'name': 'Anita Magar', 'xp': 120, 'level': 2, 'photoUrl': null},
-    {'name': 'Suman Tamang', 'xp': 95, 'level': 1, 'photoUrl': null},
-    {'name': 'Maya Rai', 'xp': 80, 'level': 1, 'photoUrl': null},
-    {'name': 'Kiran Lama', 'xp': 65, 'level': 1, 'photoUrl': null},
-    {'name': 'Sita Thapa', 'xp': 50, 'level': 1, 'photoUrl': null},
-    {'name': 'Gopal Shrestha', 'xp': 45, 'level': 1, 'photoUrl': null},
-    {'name': 'Pema Sherpa', 'xp': 30, 'level': 1, 'photoUrl': null},
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,58 +21,79 @@ class _LeaderboardScreenSimpleState extends State<LeaderboardScreenSimple> {
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          // Top 3 Podium
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Text(
-                  'Top Learners',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade800,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: FirebaseService().getLeaderboard(
+          Provider.of<UserProviderSimple>(context, listen: false).user?.classLevel ?? 1
+        ),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          final leaderboard = snapshot.data ?? [];
+          
+          if (leaderboard.isEmpty) {
+            return const Center(child: Text('No leaderboard data found'));
+          }
+
+          return Column(
+            children: [
+              // Top 3 Podium
+              if (leaderboard.length >= 3)
+              Container(
+                padding: const EdgeInsets.all(20),
+                child: Column(
                   children: [
-                    _buildPodiumItem(_mockLeaderboard[1], 2, Colors.grey.shade400),
-                    _buildPodiumItem(_mockLeaderboard[0], 1, Colors.yellow.shade600),
-                    _buildPodiumItem(_mockLeaderboard[2], 3, Colors.brown.shade400),
+                    Text(
+                      'Top Learners',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue.shade800,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildPodiumItem(leaderboard[1], 2, Colors.grey.shade400),
+                        _buildPodiumItem(leaderboard[0], 1, Colors.yellow.shade600),
+                        _buildPodiumItem(leaderboard[2], 3, Colors.brown.shade400),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ),
+              ),
 
-          // Leaderboard List
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+              // Leaderboard List
+              Expanded(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                  ),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: leaderboard.length,
+                    itemBuilder: (context, index) {
+                      final user = leaderboard[index];
+                      return LeaderboardTile(
+                        rank: index + 1,
+                        user: user,
+                      );
+                    },
+                  ),
                 ),
               ),
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: _mockLeaderboard.length,
-                itemBuilder: (context, index) {
-                  final user = _mockLeaderboard[index];
-                  return LeaderboardTile(
-                    rank: index + 1,
-                    user: user,
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }

@@ -1,0 +1,25 @@
+{
+  "games": [
+    {
+      "id": "memory_numbers",
+      "type": "memory_card",
+      "difficulty": "easy",
+      "content": ["1", "१", "2", "२", "3", "३"],
+      "gridSize": "4x4"
+    },
+    {
+      "id": "alphabet_memory",
+      "type": "memory_card", 
+      "difficulty": "easy",
+      "content": ["A", "अ", "B", "ब", "C", "क"],
+      "gridSize": "4x4"
+    },
+    {
+      "id": "math_master",
+      "type": "quiz_challenge",
+      "difficulty": "expert",
+      "timeLimit": 60,
+      "questions": 10
+    }
+  ]
+}

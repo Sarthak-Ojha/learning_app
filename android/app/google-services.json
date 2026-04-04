@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "235702908555",
+    "project_id": "learning-app-3cabc",
+    "storage_bucket": "learning-app-3cabc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:235702908555:android:293b561beadc0cbe9a068e",
+        "android_client_info": {
+          "package_name": "com.example.learning_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "235702908555-pugbfluk0hnfv75i5atmtov4bt9ggrlk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.learning_app",
+            "certificate_hash": "36ea4abd1c756e3c2950971e4337efe50dc7b339"
+          }
+        },
+        {
+          "client_id": "235702908555-nereq6ujcslkmtgmakl1usp16ded06os.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAH7YuOlEDk3b-t_6CgA-lwOZ-Ipv9yv5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "235702908555-nereq6ujcslkmtgmakl1usp16ded06os.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

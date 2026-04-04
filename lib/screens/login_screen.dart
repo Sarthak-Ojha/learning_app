@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/user_provider_simple.dart';
 
 class ChildProfileScreen extends StatefulWidget {
   const ChildProfileScreen({super.key});
@@ -140,7 +142,7 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
                               return 'Please enter age';
                             }
                             final ageValue = int.tryParse(value);
-                            if (ageValue == null || ageValue <= 0 || ageValue > 15) {
+                            if (ageValue == null || ageValue <= 0 || ageValue > 18) {
                               return 'Please enter a valid age';
                             }
                             return null;
@@ -210,7 +212,17 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
                           children: [
                             Expanded(
                               child: OutlinedButton.icon(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  final provider = Provider.of<UserProviderSimple>(context, listen: false);
+                                  final success = await provider.signInWithGoogle();
+                                  if (success && context.mounted) {
+                                    Navigator.of(context).pushReplacementNamed('/home');
+                                  } else if (!success && context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Failed to sign in with Google')),
+                                    );
+                                  }
+                                },
                                 icon: const Icon(Icons.g_mobiledata, size: 28, color: Colors.red),
                                 label: const Text('Google', style: TextStyle(color: Colors.black87)),
                                 style: OutlinedButton.styleFrom(

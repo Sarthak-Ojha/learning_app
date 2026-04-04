@@ -171,17 +171,17 @@ class StreakScreen extends StatelessWidget {
                         // Header
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Icon(Icons.chevron_left, color: Colors.grey),
+                          children: [
+                            const Icon(Icons.chevron_left, color: Colors.grey),
                             Text(
-                              'April',
-                              style: TextStyle(
+                              _getMonthName(DateTime.now().month),
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF1976D2),
                               ),
                             ),
-                            Icon(Icons.chevron_right, color: Colors.grey),
+                            const Icon(Icons.chevron_right, color: Colors.grey),
                           ],
                         ),
                         const SizedBox(height: 24),
@@ -189,18 +189,18 @@ class StreakScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: const [
-                            Text('Sat', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600)),
                             Text('Sun', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600)),
                             Text('Mon', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600)),
                             Text('Tue', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600)),
                             Text('Wed', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600)),
                             Text('Thu', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600)),
                             Text('Fri', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600)),
+                            Text('Sat', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600)),
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // Mock Calendar Grid based on image
-                        _buildCalendarGrid(),
+                        // Dynamic Calendar Grid
+                        _buildCalendarGrid(streakCount),
                       ],
                     ),
                   ),
@@ -247,63 +247,82 @@ class StreakScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCalendarGrid() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            const SizedBox(width: 32),
-            const SizedBox(width: 32),
-            _buildDayCell('1', false),
-            _buildDayCell('2', false),
-            _buildDayCell('3', true),
-            _buildDayCell('4', false),
-            _buildDayCell('5', false),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildDayCell('6', false),
-            _buildDayCell('7', false),
-            _buildDayCell('8', false),
-            _buildDayCell('9', false),
-            _buildDayCell('10', false),
-            _buildDayCell('11', false),
-            _buildDayCell('12', false),
-          ],
-        ),
-      ],
-    );
+  String _getMonthName(int month) {
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return months[month - 1];
   }
 
-  Widget _buildDayCell(String day, bool isToday) {
-    if (isToday) {
-      return Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: Colors.orange,
-          shape: BoxShape.circle,
-          border: Border.all(color: const Color(0xFF1976D2), width: 2),
-        ),
-        child: Center(
-          child: Text(
-            day,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-        ),
-      );
+  Widget _buildCalendarGrid(int streakCount) {
+    final now = DateTime.now();
+    final firstDayOfMonth = DateTime(now.year, now.month, 1);
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    
+    // In Dart, weekday is 1=Mon, ..., 7=Sun.
+    // If week starts on Sunday (0=Sun, 1=Mon, ...), offset is `firstDayOfMonth.weekday % 7`.
+    final firstDayOffset = firstDayOfMonth.weekday % 7; 
+
+    List<Widget> rows = [];
+    List<Widget> currentRow = [];
+
+    // Add empty cells for offset
+    for (int i = 0; i < firstDayOffset; i++) {
+      currentRow.add(const SizedBox(width: 36, height: 36));
     }
-    return SizedBox(
+
+    for (int day = 1; day <= daysInMonth; day++) {
+      bool isToday = (day == now.day);
+      // streak colors the past consecutive `streakCount` days including today, if the streak is active up to today.
+      bool isStreakDay = false;
+      if (day <= now.day && day > now.day - streakCount) {
+        isStreakDay = true;
+      }
+
+      currentRow.add(_buildDayCell(day.toString(), isToday: isToday, isStreakDay: isStreakDay));
+
+      if (currentRow.length == 7) {
+        rows.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: currentRow,
+        ));
+        rows.add(const SizedBox(height: 16));
+        currentRow = [];
+      }
+    }
+
+    // Add remaining empty cells for the last row
+    if (currentRow.isNotEmpty) {
+      while (currentRow.length < 7) {
+        currentRow.add(const SizedBox(width: 36, height: 36));
+      }
+      rows.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: currentRow,
+      ));
+    }
+
+    return Column(children: rows);
+  }
+
+  Widget _buildDayCell(String day, {bool isToday = false, bool isStreakDay = false}) {
+    return Container(
       width: 36,
       height: 36,
+      decoration: BoxDecoration(
+        color: isStreakDay ? Colors.orange : Colors.transparent,
+        shape: BoxShape.circle,
+        border: isToday ? Border.all(color: const Color(0xFF1976D2), width: 2) : null,
+      ),
       child: Center(
         child: Text(
           day,
-          style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.w500, fontSize: 16),
+          style: TextStyle(
+            color: isStreakDay ? Colors.white : Colors.grey.shade700, 
+            fontWeight: isStreakDay || isToday ? FontWeight.bold : FontWeight.w500, 
+            fontSize: 16
+          ),
         ),
       ),
     );

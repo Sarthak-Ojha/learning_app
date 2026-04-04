@@ -10,9 +10,22 @@ import 'screens/subject_lessons_screen.dart';
 import 'screens/lesson_screen.dart';
 import 'screens/quiz_screen.dart';
 import 'screens/leaderboard_screen_simple.dart';
+import 'screens/premium_upgrade_screen.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'models/lesson.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint("Firebase init error: $e");
+  }
+  Stripe.publishableKey = 'pk_test_51TIKFCRRKy7XzxCrBxLUWQNTbTfkAeHFdj1aria7z3aMk3IczyQZMNkESlYsqXN8QWD7A2QaRBi51H7AXKYIiIA700j99R5l9I';
+  await Stripe.instance.applySettings();
+  
   runApp(const MyApp());
 }
 
@@ -24,7 +37,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => UserProviderSimple(),
       child: MaterialApp(
-        title: 'Nepal Learning Quest',
+        title: 'GyanYatra',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: const Color(0xFFFFD700), // Sunny Yellow
@@ -41,25 +54,18 @@ class MyApp extends StatelessWidget {
           '/class_selection': (context) => const ClassSelectionScreen(),
           '/home': (context) => const SubjectDashboardScreen(),
           '/subject_lessons': (context) => const SubjectLessonsScreen(),
-          '/lesson': (context) => LessonScreen(lesson: Lesson(
-            id: 'temp',
-            title: 'Temporary',
-            description: 'Temporary lesson',
-            subject: Subject.Math,
-            classLevel: 1,
-            level: 1,
-            content: [],
-          )),
-          '/quiz': (context) => QuizScreen(lesson: Lesson(
-            id: 'temp',
-            title: 'Temporary',
-            description: 'Temporary lesson',
-            subject: Subject.Math,
-            classLevel: 1,
-            level: 1,
-            content: [],
-          )),
+          '/lesson': (context) {
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+            final lesson = args['lesson'] as Lesson;
+            return LessonScreen(lesson: lesson);
+          },
+          '/quiz': (context) {
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+            final lesson = args['lesson'] as Lesson;
+            return QuizScreen(lesson: lesson);
+          },
           '/leaderboard': (context) => const LeaderboardScreenSimple(),
+          '/premium_upgrade': (context) => const PremiumUpgradeScreen(),
         },
         debugShowCheckedModeBanner: false,
       ),

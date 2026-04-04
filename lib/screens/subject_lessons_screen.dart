@@ -21,6 +21,16 @@ class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
       case 'True-False': return Icons.checklist_rtl_rounded;
       case 'Counting': return Icons.exposure_rounded;
       case 'Matching': return Icons.compare_arrows_rounded;
+      case 'Barnamala': return Icons.sort_by_alpha_rounded;
+      case 'Numbers': return Icons.format_list_numbered_rounded;
+      case 'Barakhari': return Icons.font_download_rounded;
+      case 'Handwriting': return Icons.draw_rounded;
+      case 'Byakaran': return Icons.rule_folder_rounded;
+      case 'Flashcards': return Icons.style_rounded;
+      case 'Addition': return Icons.add_circle_outline_rounded;
+      case 'Alphabets': return Icons.abc_rounded;
+      case 'Grammar': return Icons.spellcheck_rounded;
+      case 'Nepal Basics': return Icons.location_on_rounded;
       default: return Icons.school_rounded;
     }
   }
@@ -181,7 +191,25 @@ class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
     return Consumer<UserProviderSimple>(
       builder: (context, userProvider, child) {
         final isCompleted = userProvider.user?.completedLessons.contains(lesson.id) ?? false;
-        final isLocked = lesson.isLocked && !isCompleted && lesson.category == 'Learning'; // Only lock standard path
+        final isPremium = userProvider.user?.isPremium ?? false;
+        
+        bool isPremiumLocked = false;
+        bool isLocked = false;
+        if (!isCompleted) {
+          if (lesson.level == 1) {
+            isLocked = false; // Level 1 is always accessible
+          } else {
+            if (!isPremium) {
+              isLocked = true; // Standard Freemium Paywall
+              isPremiumLocked = true;
+            } else {
+              // Even if premium, user must complete previous level
+              final bool meetsPrerequisites = lesson.prerequisites.isEmpty || 
+                  lesson.prerequisites.every((reqId) => userProvider.user?.completedLessons.contains(reqId) ?? false);
+              isLocked = !meetsPrerequisites;
+            }
+          }
+        }
         
         // Create an alternating winding pattern
         final offsets = [0.0, 60.0, 100.0, 60.0, 0.0, -60.0, -100.0, -60.0];
@@ -195,7 +223,7 @@ class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
               right: offset < 0 ? -offset : 0
             ),
             child: GestureDetector(
-              onTap: () => _showLessonDetails(context, lesson, isLocked, isCompleted),
+              onTap: () => _showLessonDetails(context, lesson, isLocked, isCompleted, isPremiumLocked),
               child: Stack(
                 alignment: Alignment.center,
                 clipBehavior: Clip.none,
@@ -239,7 +267,7 @@ class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
                               child: Container(
                                 padding: const EdgeInsets.all(4),
                                 decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                                child: Icon(Icons.lock, size: 14, color: Colors.grey.shade600),
+                                child: Icon(isPremiumLocked ? Icons.star : Icons.lock, size: 14, color: isPremiumLocked ? Colors.amber.shade700 : Colors.grey.shade600),
                               ),
                             ),
                           if (isCompleted)
@@ -264,7 +292,7 @@ class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
     );
   }
 
-  void _showLessonDetails(BuildContext context, Lesson lesson, bool isLocked, bool isCompleted) {
+  void _showLessonDetails(BuildContext context, Lesson lesson, bool isLocked, bool isCompleted, bool isPremiumLocked) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -328,23 +356,28 @@ class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: isLocked ? null : () {
-                    Navigator.pop(context); // Close sheet
-                    Navigator.of(context).pushNamed(
-                      '/lesson',
-                      arguments: {'lesson': lesson},
-                    );
-                  },
+                  onPressed: isPremiumLocked 
+                    ? () {
+                        Navigator.pop(context);
+                        Navigator.of(context).pushNamed('/premium_upgrade');
+                      }
+                    : (isLocked ? null : () {
+                        Navigator.pop(context); // Close sheet
+                        Navigator.of(context).pushNamed(
+                          '/lesson',
+                          arguments: {'lesson': lesson},
+                        );
+                      }),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isLocked ? Colors.grey.shade300 : const Color(0xFF1976D2),
-                    foregroundColor: Colors.white,
+                    backgroundColor: isPremiumLocked ? Colors.amber.shade600 : (isLocked ? Colors.grey.shade300 : const Color(0xFF1976D2)),
+                    foregroundColor: isPremiumLocked || !isLocked ? Colors.white : Colors.grey.shade600,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                     elevation: 0,
                   ),
                   child: Text(
-                    isLocked ? 'Locked' : (isCompleted ? 'Review Activity' : 'Start Activity'),
+                    isPremiumLocked ? 'Unlock with Premium' : (isLocked ? 'Complete previous level' : (isCompleted ? 'Review Activity' : 'Start Activity')),
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

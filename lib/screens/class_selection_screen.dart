@@ -61,38 +61,18 @@ class ClassSelectionScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Expanded(child: _buildClassCard(context, 1, name, age)),
-                            const SizedBox(width: 16),
-                            Expanded(child: _buildClassCard(context, 2, name, age)),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Expanded(child: _buildClassCard(context, 3, name, age)),
-                            const SizedBox(width: 16),
-                            Expanded(child: _buildClassCard(context, 4, name, age)),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            const Spacer(flex: 1),
-                            Expanded(flex: 2, child: _buildClassCard(context, 5, name, age)),
-                            const Spacer(flex: 1),
-                          ],
-                        ),
-                      ),
-                    ],
+                  child: GridView.builder(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 1.1,
+                    ),
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return _buildClassCard(context, index + 1, name, age);
+                    },
                   ),
                 ),
               ],
@@ -120,8 +100,23 @@ class ClassSelectionScreen extends StatelessWidget {
         cardColor = const Color(0xFFFFA07A); // Light Salmon
         break;
       case 5:
-      default:
         cardColor = const Color(0xFFDDA0DD); // Plum
+        break;
+      case 6:
+        cardColor = const Color(0xFFFFB6C1); // Light Pink
+        break;
+      case 7:
+        cardColor = const Color(0xFF20B2AA); // Light Sea Green
+        break;
+      case 8:
+        cardColor = const Color(0xFFFF7F50); // Coral
+        break;
+      case 9:
+        cardColor = const Color(0xFFBA55D3); // Medium Orchid
+        break;
+      case 10:
+      default:
+        cardColor = const Color(0xFF4682B4); // Steel Blue
         break;
     }
 
