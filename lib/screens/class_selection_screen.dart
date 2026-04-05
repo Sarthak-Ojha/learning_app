@@ -124,13 +124,20 @@ class ClassSelectionScreen extends StatelessWidget {
       builder: (context, userProvider, child) {
         return GestureDetector(
           onTap: () async {
-            // Create child profile here now that class is chosen
-            await userProvider.createChildProfile(
-              name: name,
-              age: age,
-              classLevel: classLevel,
-              avatar: 'mountain',
-            );
+            // Determine if we are creating a guest or updating Google user
+            if (userProvider.isAuthenticated && !userProvider.user!.uid.startsWith('child_')) {
+              // Existing Google User: just change class level
+              await userProvider.changeClassLevel(classLevel);
+              userProvider.clearNewUserFlag();
+            } else {
+              // Creating a new child profile (guest flow)
+              await userProvider.createChildProfile(
+                name: name,
+                age: age,
+                classLevel: classLevel,
+                avatar: 'mountain',
+              );
+            }
             
             if (context.mounted) {
               Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);

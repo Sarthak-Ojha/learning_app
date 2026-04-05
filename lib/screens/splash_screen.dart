@@ -32,12 +32,16 @@ class _SplashScreenState extends State<SplashScreen> {
   void _checkAndNavigate() {
     if (_navigated) return;
     final userProvider = Provider.of<UserProviderSimple>(context, listen: true);
-    // Once auth resolves (not loading and authenticated), navigate immediately
-    if (!userProvider.isLoading && userProvider.isAuthenticated) {
+    // Once auth resolves (not loading), navigate immediately based on auth state
+    if (!userProvider.isLoading) {
       _navigated = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/home');
+          if (userProvider.isAuthenticated) {
+            Navigator.of(context).pushReplacementNamed('/home');
+          } else {
+            Navigator.of(context).pushReplacementNamed('/auth');
+          }
         }
       });
     }
@@ -61,12 +65,10 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(24),
+              FractionallySizedBox(
+                widthFactor: 0.8,
                 child: Image.asset(
                   'assets/images/app_logo.png',
-                  width: 400,
-                  height: 400,
                   fit: BoxFit.contain,
                 ),
               ),

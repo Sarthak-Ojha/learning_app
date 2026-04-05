@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/lesson.dart';
 import '../services/multi_subject_service.dart';
 import '../providers/user_provider_simple.dart';
+import 'nepali_flip_game_screen.dart';
 
 class SubjectLessonsScreen extends StatefulWidget {
   const SubjectLessonsScreen({super.key});
@@ -31,6 +32,7 @@ class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
       case 'Alphabets': return Icons.abc_rounded;
       case 'Grammar': return Icons.spellcheck_rounded;
       case 'Nepal Basics': return Icons.location_on_rounded;
+      case 'Games': return Icons.videogame_asset_rounded;
       default: return Icons.school_rounded;
     }
   }
@@ -363,10 +365,18 @@ class _SubjectLessonsScreenState extends State<SubjectLessonsScreen> {
                       }
                     : (isLocked ? null : () {
                         Navigator.pop(context); // Close sheet
-                        Navigator.of(context).pushNamed(
-                          '/lesson',
-                          arguments: {'lesson': lesson},
-                        );
+                        if (lesson.category == 'Games' && lesson.subject == Subject.Nepali) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => NepaliFlipGameScreen(classLevel: lesson.classLevel),
+                            ),
+                          );
+                        } else {
+                          Navigator.of(context).pushNamed(
+                            '/lesson',
+                            arguments: {'lesson': lesson},
+                          );
+                        }
                       }),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isPremiumLocked ? Colors.amber.shade600 : (isLocked ? Colors.grey.shade300 : const Color(0xFF1976D2)),

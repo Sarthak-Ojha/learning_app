@@ -1091,6 +1091,23 @@ class MultiSubjectService {
         ),
       );
 
+      // ── Game (Flip & Pair) ───────────────────────────────────────────
+      lessons.add(
+        Lesson(
+          id: 'nep_game_1_flip',
+          title: 'Nepali Flip & Pair Game',
+          description: 'Match the identical Nepali letters! 🎮',
+          subject: Subject.Nepali,
+          classLevel: 1,
+          level: 1,
+          category: 'Games',
+          content: [
+            LessonContent(type: 'text', content: 'Let\'s play a matching game!', order: 1),
+          ],
+          xpReward: 30,
+        ),
+      );
+
     } else if (classLevel == 2) {
       // ── व्यञ्जन वर्ण (Consonants क–ङ) ──────────────────────────────────
       lessons.add(
@@ -1148,7 +1165,7 @@ class MultiSubjectService {
             LessonContent(type: 'text', content: 'सुन्तला 🍊\nअंगुर 🍇\nखरबुजा 🍈', order: 3),
             LessonContent(type: 'text', content: '💡 मनपर्ने फल छान्नुहोस्!', order: 4),
           ],
-          xpReward: 50,
+          xpReward: 60,
           quiz: Quiz(
             questions: [
               Question(
@@ -1169,6 +1186,23 @@ class MultiSubjectService {
               ),
             ],
           ),
+        ),
+      );
+
+      // ── Game (Flip & Pair) ───────────────────────────────────────────
+      lessons.add(
+        Lesson(
+          id: 'nep_game_2_flip',
+          title: 'Nepali Flip & Pair Game',
+          description: 'Match the identical Nepali letters! 🎮',
+          subject: Subject.Nepali,
+          classLevel: 2,
+          level: 1,
+          category: 'Games',
+          content: [
+            LessonContent(type: 'text', content: 'Let\'s play a matching game!', order: 1),
+          ],
+          xpReward: 30,
         ),
       );
 

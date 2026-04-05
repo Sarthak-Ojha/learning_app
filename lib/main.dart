@@ -52,10 +52,12 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
               fontFamily: 'Roboto',
             ),
-            // Automatically show dashboard if authenticated, else show Splash/Auth
-            home: userProvider.isAuthenticated
-                ? const SubjectDashboardScreen()
-                : const SplashScreen(),
+            // Automatically show dashboard if authenticated, else show Splash then Auth
+            home: !userProvider.isInitialCheckDone
+                ? const SplashScreen()
+                : (userProvider.isAuthenticated
+                    ? const SubjectDashboardScreen()
+                    : const AuthScreen()),
             routes: {
               '/auth': (context) => const AuthScreen(),
               '/profile': (context) => const ChildProfileScreen(),

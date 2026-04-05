@@ -670,6 +670,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                 if (confirm == true && mounted) {
                   await userProvider.signOut();
+                  if (context.mounted) {
+                    Navigator.of(context).pushNamedAndRemoveUntil('/auth', (route) => false);
+                  }
                 }
               },
               icon: const Icon(Icons.logout_rounded),

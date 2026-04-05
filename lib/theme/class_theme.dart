@@ -238,6 +238,7 @@ class ClassTheme {
   // ── Subject labels ─────────────────────────────────────────────────────────
 
   String subjectTitle(String base) {
+    if (base == 'Nepali') return 'नेपाली - Nepali';
     switch (tier) {
       case 1:
         switch (base) {
@@ -246,7 +247,7 @@ class ClassTheme {
           case 'English':
             return '🔤 English Play';
           case 'Nepali':
-            return '📖 Nepali Paath';
+            return '📖 नेपाली - Nepali Paath';
           case 'Gen. Knowledge':
             return '🌍 Cool Facts';
         }
@@ -257,7 +258,7 @@ class ClassTheme {
           case 'English':
             return 'English 🔤';
           case 'Nepali':
-            return 'Nepali 📖';
+            return 'नेपाली - Nepali 📖';
           case 'Gen. Knowledge':
             return 'General Knowledge 🌏';
         }

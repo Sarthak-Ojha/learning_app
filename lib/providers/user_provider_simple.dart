@@ -23,69 +23,77 @@ class UserProviderSimple with ChangeNotifier {
   User? _user;
   ChildProfile? _childProfile;
   bool _isLoading = false;
+  bool _isInitialCheckDone = false;
+  bool _isNewUser = false; // Flag for first-time login setup
 
   User? get user => _user;
   ChildProfile? get childProfile => _childProfile;
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _user != null;
+  bool get isInitialCheckDone => _isInitialCheckDone;
+  bool get isNewUser => _isNewUser;
+
+  // Set isNewUser to false after setup is handled
+  void clearNewUserFlag() {
+    _isNewUser = false;
+    notifyListeners();
+  }
 
   // Check for existing session on startup
   Future<void> checkCurrentUser() async {
-    final firebaseUser = firebase_auth.FirebaseAuth.instance.currentUser;
-    if (firebaseUser != null) {
-      _setLoading(true);
-
-      // 1. Load from local SQLite first (Fast Offline Load)
-      final localUser = await DatabaseService.instance.getUser(firebaseUser.uid);
-      if (localUser != null) {
-        _user = localUser;
-        _setLoading(false);
-        notifyListeners();
-      }
-
-      // 2. Sync with Firestore (Background Sync)
-      try {
-        final doc = await FirebaseService()
-            .getUserDoc(firebaseUser.uid)
-            .timeout(const Duration(seconds: 5));
-        
-        if (doc != null && doc.data() != null) {
-          final data = doc.data()!;
-          
-          // CRITICAL: If we have a local user, prioritize local Name and ClassLevel
-          // because these are user-set identities that shouldn't be 'rolled back' by sync.
-          final String finalName = _user?.name ?? (data['name'] ?? 'Student');
-          final int finalClassLevel = _user?.classLevel ?? (data['classLevel'] ?? 1);
-          
-          // XP and Level can be synced from cloud if cloud is higher (cross-device progress)
-          final int cloudXp = data['xp'] ?? 0;
-          final int cloudLevel = data['level'] ?? 1;
-          
-          final int finalXp = (cloudXp > (_user?.xp ?? 0)) ? cloudXp : (_user?.xp ?? 0);
-          final int finalLevel = (cloudLevel > (_user?.level ?? 1)) ? cloudLevel : (_user?.level ?? 1);
-
-          final syncedUser = User(
-            uid: firebaseUser.uid,
-            name: finalName,
-            email: firebaseUser.email ?? (data['email'] ?? ''),
-            photoUrl: firebaseUser.photoURL ?? data['photoUrl'],
-            xp: finalXp,
-            level: finalLevel,
-            classLevel: finalClassLevel,
-            streak: data['streak'] ?? (_user?.streak ?? 0),
-            completedLessons: _user?.completedLessons ?? [],
-            badges: [],
-            isPremium: data['isPremium'] ?? (_user?.isPremium ?? false),
-          );
-          
-          _user = syncedUser;
-          // Always update local SQLite to ensure cloud/local convergence
-          await DatabaseService.instance.saveUser(_user!);
+    _setLoading(true);
+    try {
+      final firebaseUser = firebase_auth.FirebaseAuth.instance.currentUser;
+      if (firebaseUser != null) {
+        // 1. Load from local SQLite first (Fast Offline Load)
+        final localUser = await DatabaseService.instance.getUser(firebaseUser.uid);
+        if (localUser != null) {
+          _user = localUser;
+          // Notify once after local load so UI can refresh fast
+          notifyListeners();
         }
-      } catch (e) {
-        debugPrint("Session sync: Cloud fetch failed (using local only): $e");
-      }
 
+        // 2. Sync with Firestore (Background Sync)
+        try {
+          final doc = await FirebaseService()
+              .getUserDoc(firebaseUser.uid)
+              .timeout(const Duration(seconds: 5));
+          
+          if (doc != null && doc.data() != null) {
+            final data = doc.data()!;
+            
+            final String finalName = _user?.name ?? (data['name'] ?? 'Student');
+            final int finalClassLevel = _user?.classLevel ?? (data['classLevel'] ?? 1);
+            
+            final int cloudXp = data['xp'] ?? 0;
+            final int cloudLevel = data['level'] ?? 1;
+            
+            final int finalXp = (cloudXp > (_user?.xp ?? 0)) ? cloudXp : (_user?.xp ?? 0);
+            final int finalLevel = (cloudLevel > (_user?.level ?? 1)) ? cloudLevel : (_user?.level ?? 1);
+
+            final syncedUser = User(
+              uid: firebaseUser.uid,
+              name: finalName,
+              email: firebaseUser.email ?? (data['email'] ?? ''),
+              photoUrl: firebaseUser.photoURL ?? data['photoUrl'],
+              xp: finalXp,
+              level: finalLevel,
+              classLevel: finalClassLevel,
+              streak: data['streak'] ?? (_user?.streak ?? 0),
+              completedLessons: _user?.completedLessons ?? [],
+              badges: [],
+              isPremium: data['isPremium'] ?? (_user?.isPremium ?? false),
+            );
+            
+            _user = syncedUser;
+            await DatabaseService.instance.saveUser(_user!);
+          }
+        } catch (e) {
+          debugPrint("Session sync: Cloud fetch failed (using local only): $e");
+        }
+      }
+    } finally {
+      _isInitialCheckDone = true;
       _setLoading(false);
       notifyListeners();
     }
@@ -131,6 +139,7 @@ class UserProviderSimple with ChangeNotifier {
 
   Future<bool> signInWithGoogle() async {
     _setLoading(true);
+    _isNewUser = false; // Reset before attempt
     try {
       try {
         await GoogleSignIn.instance.initialize(
@@ -138,8 +147,12 @@ class UserProviderSimple with ChangeNotifier {
         );
       } catch (e) {}
 
-      final googleUser = await GoogleSignIn.instance.authenticate();
-      final googleAuth = googleUser.authentication;
+      final GoogleSignInAccount? googleUser = await GoogleSignIn.instance.authenticate();
+      if (googleUser == null) {
+        _setLoading(false);
+        return false;
+      }
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
       final firebase_auth.AuthCredential credential =
           firebase_auth.GoogleAuthProvider.credential(
@@ -157,6 +170,10 @@ class UserProviderSimple with ChangeNotifier {
         int classLevel = 1;
         int xp = 0;
         int level = 1;
+        bool userFoundInCloud = false;
+
+        // Check local first
+        final localUser = await DatabaseService.instance.getUser(firebaseUser.uid);
 
         try {
           final doc = await FirebaseService()
@@ -164,13 +181,21 @@ class UserProviderSimple with ChangeNotifier {
               .timeout(const Duration(seconds: 5));
           
           if (doc != null && doc.data() != null) {
+            userFoundInCloud = true;
             final data = doc.data()!;
             classLevel = data['classLevel'] ?? 1;
             xp = data['xp'] ?? 0;
             level = data['level'] ?? 1;
           }
         } catch (e) {
-          debugPrint("Google Sign In: Cloud sync failed: $e");
+          debugPrint("Google Sign In: Cloud sync check failed: $e");
+          // If cloud check fails, assume existing if local exists
+          if (localUser != null) userFoundInCloud = true;
+        }
+
+        // If not in cloud AND not in local, it's a first time sign in
+        if (!userFoundInCloud && localUser == null) {
+          _isNewUser = true;
         }
         
         _user = User(
@@ -189,7 +214,7 @@ class UserProviderSimple with ChangeNotifier {
         // 1. Save to Offline SQLite
         await DatabaseService.instance.saveUser(_user!);
 
-        // 2. Sync to Cloud
+        // 2. Sync to Cloud if not just created (or update even if just created)
         FirebaseService().saveUserScore(
           _user!.uid,
           _user!.name,

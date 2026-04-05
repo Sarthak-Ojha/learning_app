@@ -126,12 +126,23 @@ class AuthScreen extends StatelessWidget {
                               final provider = Provider.of<UserProviderSimple>(context, listen: false);
                                 final success = await provider.signInWithGoogle();
                                 if (!context.mounted) return;
-                                if (success) {
-                                  // ✅ Navigate immediately — replace entire stack
-                                  Navigator.of(context).pushNamedAndRemoveUntil(
-                                    '/home',
-                                    (route) => false,
-                                  );
+                                  if (success) {
+                                  // Navigate to class selection if user is new, else go to home
+                                  if (provider.isNewUser) {
+                                    Navigator.of(context).pushNamedAndRemoveUntil(
+                                      '/class_selection',
+                                      (route) => false,
+                                      arguments: {
+                                        'name': provider.user?.name ?? 'Student',
+                                        'age': 7, 
+                                      },
+                                    );
+                                  } else {
+                                    Navigator.of(context).pushNamedAndRemoveUntil(
+                                      '/home',
+                                      (route) => false,
+                                    );
+                                  }
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text('Could not sign in. Please try again.')),

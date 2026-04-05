@@ -6,7 +6,6 @@ import '../services/multi_subject_service.dart';
 import '../providers/user_provider_simple.dart';
 import '../services/parental_control_service.dart';
 import '../theme/class_theme.dart';
-import 'streak_screen.dart';
 import 'settings_screen.dart';
 import 'parental_lock_screen.dart';
 import 'leaderboard_screen_simple.dart';
@@ -131,39 +130,6 @@ class _SubjectDashboardScreenState extends State<SubjectDashboardScreen>
   PreferredSizeWidget _buildAppBar(
       ClassTheme theme, int classLevel, UserProviderSimple userProvider) {
     return AppBar(
-      leadingWidth: 80,
-      leading: GestureDetector(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const StreakScreen()),
-        ),
-        child: Container(
-          margin: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.22),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedBuilder(
-                animation: _bounceCtrl,
-                builder: (_, __) => Transform.scale(
-                  scale: theme.isPlayful ? 1.0 + _bounceCtrl.value * 0.15 : 1.0,
-                  child: const Icon(Icons.local_fire_department_rounded,
-                      color: Colors.orangeAccent, size: 20),
-                ),
-              ),
-              const SizedBox(width: 4),
-              Text(
-                '${userProvider.user?.streak ?? 0}',
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ),
-      ),
       title: Text(
         theme.classLabel,
         style: TextStyle(
@@ -177,29 +143,6 @@ class _SubjectDashboardScreenState extends State<SubjectDashboardScreen>
       scrolledUnderElevation: 0,
       centerTitle: true,
       iconTheme: const IconThemeData(color: Colors.white),
-      actions: [
-        Container(
-          margin: const EdgeInsets.only(right: 16, top: 8, bottom: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.22),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.stars_rounded, color: Colors.amber, size: 20),
-              const SizedBox(width: 6),
-              Text(
-                '${userProvider.user?.xp ?? 0} XP',
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -273,10 +216,6 @@ class _SubjectDashboardScreenState extends State<SubjectDashboardScreen>
     ClassTheme theme,
     UserProviderSimple userProvider,
   ) {
-    final completedCount = userProvider.user?.completedLessons.length ?? 0;
-    final xp = userProvider.user?.xp ?? 0;
-    final level = userProvider.user?.level ?? 1;
-
     return Container(
       decoration: BoxDecoration(gradient: theme.headerLinearGradient),
       child: SafeArea(
@@ -316,10 +255,10 @@ class _SubjectDashboardScreenState extends State<SubjectDashboardScreen>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: theme.isPlayful
-                  ? _buildPlayfulStats(xp, completedCount, level, theme)
+                  ? _buildPlayfulStats(userProvider, theme)
                   : theme.isAdventure
-                      ? _buildAdventureStats(xp, completedCount, level, theme)
-                      : _buildScholarStats(xp, completedCount, level, theme),
+                      ? _buildAdventureStats(userProvider, theme)
+                      : _buildScholarStats(userProvider, theme),
             ),
 
             const SizedBox(height: 20),
@@ -362,13 +301,20 @@ class _SubjectDashboardScreenState extends State<SubjectDashboardScreen>
   // ── Stats Variants ─────────────────────────────────────────────────────────
 
   /// Class 1–2: Big emoji bubbles
-  Widget _buildPlayfulStats(int xp, int done, int level, ClassTheme theme) {
+  Widget _buildPlayfulStats(UserProviderSimple provider, ClassTheme theme) {
+    final xp = provider.user?.xp ?? 0;
+    final done = provider.user?.completedLessons.length ?? 0;
+    final level = provider.user?.level ?? 1;
+    final streak = provider.user?.streak ?? 0;
+
     return Row(
       children: [
         _playfulBubble('⭐', '$xp', 'Stars', const Color(0xFFFFB347)),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
+        _playfulBubble('🔥', '$streak', 'Streak', Colors.orange),
+        const SizedBox(width: 8),
         _playfulBubble('✅', '$done', 'Done!', const Color(0xFF4CAF50)),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         _playfulBubble('🏅', 'Lv.$level', 'Level', const Color(0xFFFF6B9D)),
       ],
     );
@@ -408,13 +354,20 @@ class _SubjectDashboardScreenState extends State<SubjectDashboardScreen>
       );
 
   /// Class 3–4: Horizontal badge strip
-  Widget _buildAdventureStats(int xp, int done, int level, ClassTheme theme) {
+  Widget _buildAdventureStats(UserProviderSimple provider, ClassTheme theme) {
+    final xp = provider.user?.xp ?? 0;
+    final done = provider.user?.completedLessons.length ?? 0;
+    final level = provider.user?.level ?? 1;
+    final streak = provider.user?.streak ?? 0;
+
     return Row(
       children: [
         _adventureStat(Icons.stars_rounded, '$xp XP', Colors.amber),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
+        _adventureStat(Icons.local_fire_department_rounded, '$streak Day', Colors.orangeAccent),
+        const SizedBox(width: 8),
         _adventureStat(Icons.check_circle_rounded, '$done Done', Colors.greenAccent),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         _adventureStat(Icons.military_tech_rounded, 'Lv.$level', Colors.lightBlueAccent),
       ],
     );
@@ -445,7 +398,12 @@ class _SubjectDashboardScreenState extends State<SubjectDashboardScreen>
       );
 
   /// Class 5+: Clean compact row
-  Widget _buildScholarStats(int xp, int done, int level, ClassTheme theme) {
+  Widget _buildScholarStats(UserProviderSimple provider, ClassTheme theme) {
+    final xp = provider.user?.xp ?? 0;
+    final done = provider.user?.completedLessons.length ?? 0;
+    final level = provider.user?.level ?? 1;
+    final streak = provider.user?.streak ?? 0;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -456,11 +414,13 @@ class _SubjectDashboardScreenState extends State<SubjectDashboardScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _scholarStat('$xp', 'XP Earned'),
+          _scholarStat('$streak', 'Streak'),
+          _vDivider(),
+          _scholarStat('$xp', 'XP'),
           _vDivider(),
           _scholarStat('Lv.$level', 'Level'),
           _vDivider(),
-          _scholarStat('$done', 'Completed'),
+          _scholarStat('$done', 'Done'),
         ],
       ),
     );
